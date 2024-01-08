@@ -88,3 +88,20 @@ Rails.application.configure do
   # Skip DNS rebinding protection for the default health check endpoint.
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
 end
+
+module TopcreditApi
+  class Application < Rails::Application
+    # ...
+
+    # CORS configuration
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'https://topcredit.mx'  # Specify the origin of your front-end app
+        resource '*',  # Specify which resources can be accessed
+          headers: :any,  # Allow all headers
+          methods: [:get, :post, :put, :patch, :delete, :options, :head],  # Allow all HTTP methods
+          credentials: true  # If your API involves credentials like cookies or auth tokens
+      end
+    end
+  end
+end

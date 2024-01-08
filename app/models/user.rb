@@ -4,6 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   
+  validate :email_of_company_domain
+  
   has_many :access_grants,
          class_name: 'Doorkeeper::AccessGrant',
          foreign_key: :resource_owner_id,
@@ -13,4 +15,12 @@ class User < ApplicationRecord
          class_name: 'Doorkeeper::AccessToken',
          foreign_key: :resource_owner_id,
          dependent: :delete_all # or :destroy if you need callbacks
+
+  private
+
+  def email_of_company_domain
+    if Company.find_by(domain: email.split('@').last).nil?
+      errors.add(:email, "correo debe ser de un dominio de empresa válido")
+    end
+  end
 end

@@ -72,3 +72,21 @@ Rails.application.configure do
   # Mailer configuration
   config.action_mailer.default_url_options = { host: 'localhost', port: 4000 }
 end
+
+module TopcreditApi
+  class Application < Rails::Application
+    # ...
+
+    # CORS configuration
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins 'http://localhost:3000'  # Specify the origin of your front-end app
+        resource '*',  # Specify which resources can be accessed
+          headers: :any,  # Allow all headers
+          methods: [:get, :post, :put, :patch, :delete, :options, :head],  # Allow all HTTP methods
+          credentials: true  # If your API involves credentials like cookies or auth tokens
+      end
+    end
+  end
+end
+
