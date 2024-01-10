@@ -18,6 +18,9 @@ gem 'jsonapi-resources', '~> 0.10.0'
 gem 'devise'
 gem 'doorkeeper'
 
+# Role management for this App
+gem 'rolify'
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
