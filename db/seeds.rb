@@ -9,7 +9,5 @@
 #   end
 
 if Doorkeeper::Application.count.zero?
-  Doorkeeper::Application.create(name: "Postman", redirect_uri: "", scopes: "")
+  Doorkeeper::Application.create(name: "topcredit-app", redirect_uri: "", scopes: "")
 end
-
-User.create(email: "david@cantu.com", password: "password")
