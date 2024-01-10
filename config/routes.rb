@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # root "posts#index"
   namespace :api do
     jsonapi_resources :companies
+    get 'me', to: 'me#me'
   end
 
   # authentication
