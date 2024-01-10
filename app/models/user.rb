@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  rolify
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -16,6 +17,15 @@ class User < ApplicationRecord
          foreign_key: :resource_owner_id,
          dependent: :delete_all # or :destroy if you need callbacks
 
+  # Calculate the highest possible role for the user
+  def highest_role
+    available_roles = roles.pluck(:name)
+    
+    if available_roles.include? 'admin'
+      'admin'
+    end
+  end
+  
   private
 
   def email_of_company_domain
