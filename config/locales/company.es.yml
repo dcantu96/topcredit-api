@@ -1,0 +1,11 @@
+es:
+  activerecord:
+    errors:
+      models:
+        company:
+          attributes:
+            rate:
+              greater_than_or_equal_to: "El valor debe ser mayor o igual a 0%"
+              less_than_or_equal_to: "El valor debe ser menor o igual a 100%"
+            domain:
+              invalid: "El dominio no es valido"

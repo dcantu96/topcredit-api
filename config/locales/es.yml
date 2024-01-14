@@ -27,5 +27,7 @@
 #       "yes": yup
 #       enabled: "ON"
 
-en:
-  hello: "Hello world"
+es:
+  errors:
+    messages:
+      blank: no puede estar en blanco

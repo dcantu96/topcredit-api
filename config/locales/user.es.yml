@@ -1,0 +1,8 @@
+es:
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            email:
+              invalid_domain: "El dominio del correo electrónico no está permitido"
