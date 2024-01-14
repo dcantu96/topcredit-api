@@ -1,2 +1,2 @@
-class Api::CompaniesController < Api::ApiController
+class Api::CompaniesController < Api::AuthorizedController
 end

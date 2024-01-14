@@ -1,5 +1,4 @@
 class Api::ApiController < ApplicationController
-  before_action :doorkeeper_authorize!
   include JSONAPI::ActsAsResourceController
   
   # Prevent CSRF attacks by raising an exception.

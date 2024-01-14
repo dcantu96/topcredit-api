@@ -17,6 +17,10 @@ class User < ApplicationRecord
          foreign_key: :resource_owner_id,
          dependent: :delete_all # or :destroy if you need callbacks
 
+  validates :first_name, presence: true
+  validates :last_name, presence: true
+  validates :phone, presence: true
+
   # Calculate the highest possible role for the user
   def highest_role
     available_roles = roles.pluck(:name)

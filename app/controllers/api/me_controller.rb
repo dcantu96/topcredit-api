@@ -1,4 +1,4 @@
-class Api::MeController < Api::ApiController
+class Api::MeController < Api::AuthorizedController
   def me
     current_user = User.find(doorkeeper_token.resource_owner_id)
     
