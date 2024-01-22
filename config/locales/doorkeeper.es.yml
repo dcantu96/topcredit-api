@@ -17,7 +17,6 @@ es:
               forbidden_uri: "está prohibido por el servidor."
             scopes:
               not_match_configured: "no coincide con lo configurado en el servidor."
-
   doorkeeper:
     applications:
       confirmations:
@@ -59,7 +58,6 @@ es:
         callback_urls: "URLs de Retorno"
         actions: "Acciones"
         not_defined: "No definido"
-
     authorizations:
       buttons:
         authorize: "Autorizar"
@@ -74,7 +72,6 @@ es:
         title: "Código de autorización"
       form_post:
         title: "Envía este formulario"
-
     authorized_applications:
       confirmations:
         revoke: "¿Estás seguro?"
@@ -85,10 +82,8 @@ es:
         application: "Aplicación"
         created_at: "Creado en"
         date_format: "%Y-%m-%d %H:%M:%S"
-
     pre_authorization:
       status: "Pre-autorización"
-
     errors:
       messages:
         # Common error messages
@@ -127,7 +122,6 @@ es:
 
         forbidden_token:
           missing_scope: 'El acceso a este recurso requiere el ámbito "%{oauth_scopes}".'
-
     flash:
       applications:
         create:
@@ -139,7 +133,6 @@ es:
       authorized_applications:
         destroy:
           notice: "Aplicación revocada."
-
     layouts:
       admin:
         title: "Doorkeeper"
