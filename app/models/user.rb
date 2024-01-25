@@ -30,6 +30,9 @@ class User < ApplicationRecord
     if available_roles.include? 'admin'
       'admin'
     end
+    if available_roles.include? 'requests'
+      'requests'
+    end
   end
   
   private
