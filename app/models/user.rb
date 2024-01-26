@@ -12,13 +12,13 @@ class User < ApplicationRecord
          foreign_key: :resource_owner_id,
          dependent: :delete_all # or :destroy if you need callbacks
 
-  has_many :credits, dependent: :destroy
-
   has_many :access_tokens,
          class_name: 'Doorkeeper::AccessToken',
          foreign_key: :resource_owner_id,
          dependent: :delete_all # or :destroy if you need callbacks
-
+  
+  has_many :credits, dependent: :destroy
+  
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :phone, presence: true
