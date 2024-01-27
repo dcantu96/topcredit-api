@@ -1,7 +1,9 @@
 class Api::UserResource < JSONAPI::Resource
   attributes :first_name, :last_name, :email, :phone, :password, :employee_number,
-             :bank_account_number, :address_line_one, :address_line_two, :city, 
-             :state, :postal_code, :country, :rfc, :created_at, :updated_at
+             :bank_account_number, :address_line_one, :address_line_two, :city,
+             :state, :postal_code, :country, :rfc, :salary, :salary_frequency,
+             :created_at, :updated_at
+  
   has_many :credits
   
   def fetchable_fields
