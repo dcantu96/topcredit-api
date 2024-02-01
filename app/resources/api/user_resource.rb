@@ -8,6 +8,13 @@ class Api::UserResource < JSONAPI::Resource
 
   filter :status, default: 'pending,invalid_documentation'
 
+  filter :by_role, apply: ->(records, value, _options) {    
+    if value[0] == nil
+      return records.without_role(:admin).without_role(:requests)
+    end
+    records.with_role(value[0])
+  }
+  
   def fetchable_fields
     super - [:password]
   end
