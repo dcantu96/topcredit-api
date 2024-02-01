@@ -5,7 +5,9 @@ class Api::UserResource < JSONAPI::Resource
              :status, :created_at, :updated_at
   
   has_many :credits
-  
+
+  filter :status, default: 'pending,invalid_documentation'
+
   def fetchable_fields
     super - [:password]
   end
