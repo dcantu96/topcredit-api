@@ -1,5 +1,5 @@
 class User < ApplicationRecord
-  rolify
+  rolify  
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -22,6 +22,7 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :phone, presence: true
+  validates :status, inclusion: { in: ['pending', 'approved', 'invalid_documentation', 'denied'] }
 
   # Calculate the highest possible role for the user
   def highest_role
