@@ -1,8 +1,19 @@
 es:
   activerecord:
+    models:
+      user: "Usuario"
+    attributes:
+      user:
+        state: "Estado"
+        email: "Correo Electrónico"
+        status: "Estatus"
     errors:
       models:
         user:
           attributes:
+            status:
+              inclusion: "%{value} no es válido"
+            state:
+              inclusion: "%{value} no es válido"
             email:
-              invalid_domain: "El dominio del correo electrónico no está permitido"
+              invalid_domain: "%{value} es un dominio no permitido"
