@@ -18,6 +18,7 @@ class User < ApplicationRecord
          dependent: :delete_all # or :destroy if you need callbacks
   
   has_many :credits, dependent: :destroy
+  belongs_to :handled_by, class_name: 'User', optional: true
   
   validates :first_name, presence: true
   validates :last_name, presence: true

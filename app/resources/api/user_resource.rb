@@ -5,6 +5,7 @@ class Api::UserResource < JSONAPI::Resource
              :status, :created_at, :updated_at
   
   has_many :credits
+  has_one :handled_by, class_name: 'User'
 
   filter :status, default: 'pending,invalid_documentation'
 

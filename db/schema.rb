@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_01_27_235717) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_05_183012) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -105,7 +105,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_27_235717) do
     t.integer "salary"
     t.string "salary_frequency"
     t.string "status"
+    t.bigint "handled_by_id"
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["handled_by_id"], name: "index_users_on_handled_by_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -122,4 +124,5 @@ ActiveRecord::Schema[7.1].define(version: 2024_01_27_235717) do
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "users", "users", column: "handled_by_id"
 end
