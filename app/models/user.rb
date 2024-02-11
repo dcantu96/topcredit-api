@@ -38,6 +38,10 @@ class User < ApplicationRecord
       'requests'
     end
   end
+
+  def all_roles
+    roles.pluck(:name)
+  end
   
   
   private
