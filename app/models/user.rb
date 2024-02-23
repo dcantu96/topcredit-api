@@ -26,18 +26,6 @@ class User < ApplicationRecord
   validates_inclusion_of :status, in: %w( new pending approved invalid_documentation denied )
   validates_inclusion_of :salary_frequency, in: %w( Q M ), allow_nil: true
   validates_inclusion_of :state, in: %w( AGU BCN BCS CAM CHP CHH COA COL DUR GUA GRO HID JAL MEX MIC MOR NAY NLE OAX PUE QUE ROO SLP SIN SON TAB TAM TLA VER YUC ZAC ), allow_nil: true
-  
-  # Calculate the highest possible role for the user
-  def highest_role
-    available_roles = roles.pluck(:name)
-    
-    if available_roles.include? 'admin'
-      'admin'
-    end
-    if available_roles.include? 'requests'
-      'requests'
-    end
-  end
 
   def all_roles
     roles.pluck(:name)
