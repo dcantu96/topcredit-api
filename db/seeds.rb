@@ -189,3 +189,17 @@ user.save if user.new_record? || user.changed?
 puts user.errors.full_messages if user.invalid?
 user.add_role :admin
 
+# User with "pre-authorizations" role
+user = User.find_or_initialize_by(email: 'pre-auth@staff.com')
+user.assign_attributes(
+  first_name: 'Pre-Authorization',
+  last_name: 'User',
+  phone: '1234567890',
+  password: '123456',
+  status: 'approved',
+)
+user.save if user.new_record? || user.changed?
+# Validate the user record. This will run the validations in the User model
+puts user.errors.full_messages if user.invalid?
+user.add_role :pre_authorizations
+
