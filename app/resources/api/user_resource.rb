@@ -11,7 +11,7 @@ class Api::UserResource < JSONAPI::Resource
 
   filter :by_role, apply: ->(records, value, _options) {    
     if value[0] == nil
-      return records.without_role(:admin).without_role(:requests)
+      return records.without_role(:admin).without_role(:requests).without_role('pre_authorizations')
     end
     records.with_role(value[0])
   }
