@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_02_05_183012) do
+ActiveRecord::Schema[7.1].define(version: 2024_02_24_182735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,7 +19,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_183012) do
     t.string "domain"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "terms"
     t.float "rate"
   end
 
@@ -27,6 +26,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_183012) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
+    t.float "loan"
+    t.bigint "term_id"
+    t.index ["term_id"], name: "index_credits_on_term_id"
     t.index ["user_id"], name: "index_credits_on_user_id"
   end
 
@@ -82,6 +85,24 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_183012) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "term_offerings", force: :cascade do |t|
+    t.bigint "company_id", null: false
+    t.bigint "term_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_term_offerings_on_company_id"
+    t.index ["term_id"], name: "index_term_offerings_on_term_id"
+  end
+
+  create_table "terms", force: :cascade do |t|
+    t.string "type"
+    t.integer "duration"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["duration", "type"], name: "index_terms_on_duration_and_type", unique: true
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -119,10 +140,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_05_183012) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "credits", "terms"
   add_foreign_key "credits", "users"
   add_foreign_key "oauth_access_grants", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "term_offerings", "companies"
+  add_foreign_key "term_offerings", "terms"
   add_foreign_key "users", "users", column: "handled_by_id"
 end
