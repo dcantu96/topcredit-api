@@ -4,4 +4,5 @@ class Term < ApplicationRecord
 
   validates :duration, presence: true, numericality: { greater_than: 0 }
   validates_inclusion_of :duration_type, in: %w( two-weeks months years )
+  validates_uniqueness_of :duration, scope: :duration_type
 end
