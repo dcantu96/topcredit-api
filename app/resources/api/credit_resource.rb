@@ -1,4 +1,5 @@
 class Api::CreditResource < JSONAPI::Resource
-  attributes :created_at, :updated_at
-  has_one :user
+  attributes :status, :created_at, :updated_at
+  has_one :borrower, foreign_key: 'user_id', class_name: 'User'
+  has_one :term
 end
