@@ -4,5 +4,5 @@ class Term < ApplicationRecord
 
   validates :name, presence: true
   validates :duration, presence: true, numericality: { greater_than: 0 }
-  validates_inclusion_of :duration_type, in: %w( biweekly monthly yearly )
+  validates_inclusion_of :duration_type, in: %w( two-weeks months years )
 end

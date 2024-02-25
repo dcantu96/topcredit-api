@@ -19,27 +19,27 @@ end
 
 term_examples = [
   {
-    'duration_type': 'biweekly',
+    'duration_type': 'two-weeks',
     'duration': 14,
     'name': '14 Quincenas'
   },
   {
-    'duration_type': 'monthly',
+    'duration_type': 'months',
     'duration': 30,
     'name': '30 Meses'
   },
   {
-    'duration_type': 'yearly',
+    'duration_type': 'years',
     'duration': 4,
     'name': '4 Años'
   },
   {
-    'duration_type': 'biweekly',
+    'duration_type': 'two-weeks',
     'duration': 7,
     'name': '7 Quincenas'
   },
   {
-    'duration_type': 'monthly',
+    'duration_type': 'months',
     'duration': 15,
     'name': '15 Meses'
   }
