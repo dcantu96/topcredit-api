@@ -12,6 +12,8 @@ Rails.application.routes.draw do
     jsonapi_resources :companies
     jsonapi_resources :credits
     jsonapi_resources :users
+    jsonapi_resources :terms
+    jsonapi_resources :term_offerings
     get 'me', to: 'me#me'
   end
 
