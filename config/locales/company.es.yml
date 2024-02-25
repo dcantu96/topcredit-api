@@ -4,6 +4,9 @@ es:
       models:
         company:
           attributes:
+            borrowing_capacity:
+              greater_than_or_equal_to: "El valor debe ser mayor o igual a 0%"
+              less_than_or_equal_to: "El valor debe ser menor o igual a 100%"
             rate:
               greater_than_or_equal_to: "El valor debe ser mayor o igual a 0%"
               less_than_or_equal_to: "El valor debe ser menor o igual a 100%"
