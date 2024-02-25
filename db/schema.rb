@@ -95,12 +95,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_02_24_182735) do
   end
 
   create_table "terms", force: :cascade do |t|
-    t.string "type"
+    t.string "duration_type"
     t.integer "duration"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["duration", "type"], name: "index_terms_on_duration_and_type", unique: true
+    t.index ["duration", "duration_type"], name: "index_terms_on_duration_and_duration_type", unique: true
   end
 
   create_table "users", force: :cascade do |t|
