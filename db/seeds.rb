@@ -90,6 +90,15 @@ company_examples = [
   }
 ]
 
+def save_user(user_to_save) 
+  action = user_to_save.new_record? ? 'Creating' : user_to_save.changed? ? 'Updating' : nil
+  return if action.nil?
+  
+  puts "#{action} new user #{user_to_save.email}"
+  user_to_save.assign_attributes password: '123456'
+  user_to_save.save
+end
+
 def find_or_initialize_and_update_company(company_params)
   # Extract the domain from the company params
   domain = company_params.delete(:domain)
@@ -126,13 +135,10 @@ user.assign_attributes(
   first_name: 'Request',
   last_name: 'User',
   phone: '1234567890',
-  password: '123456',
   status: 'approved',
 )
-if user.new_record? || user.changed?
-  puts 'Creating new Requests Staff'
-  user.save
-end
+save_user user
+
 # Validate the user record. This will run the validations in the User model
 puts user.errors.full_messages if user.invalid?
 user.add_role :requests
@@ -143,13 +149,9 @@ user.assign_attributes(
   first_name: 'Admin',
   last_name: 'User',
   phone: '1234567890',
-  password: '123456',
   status: 'approved',
 )
-if user.new_record? || user.changed?
-  puts 'Creating new Admin'
-  user.save
-end
+save_user user
 # Validate the user record. This will run the validations in the User model
 puts user.errors.full_messages if user.invalid?
 user.add_role :admin
@@ -160,13 +162,9 @@ user.assign_attributes(
   first_name: 'Pre-Authorization',
   last_name: 'User',
   phone: '1234567890',
-  password: '123456',
   status: 'approved',
 )
-if user.new_record? || user.changed?
-  puts 'Creating new Pre-Authorization Staff'
-  user.save
-end
+save_user user
 # Validate the user record. This will run the validations in the User model
 puts user.errors.full_messages if user.invalid?
 user.add_role :pre_authorizations
@@ -293,16 +291,12 @@ def find_or_initialize_and_update_user(user_params)
 
   # Assign the rest of the user_params to the user, whether it's a new or found record
   user.assign_attributes(user_params)
-  user.assign_attributes password: '123456'
 
   # Validate the user record. This will run the validations in the User model
   puts user.errors.full_messages if user.invalid?
 
   # Save the user record to the database. This will perform an INSERT or UPDATE depending on whether the record is new or existing
-  if user.new_record? || user.changed?
-    puts 'Creating new User'
-    user.save
-  end
+  save_user user
 end
 
 # Create or update the users
