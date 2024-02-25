@@ -73,17 +73,20 @@ company_examples = [
   {
     'name': 'Soriana',
     'domain': 'soriana.com',
-    'rate': 0.5
+    'rate': 0.5,
+    'borrowing_capacity': 0.3,
   },
   {
     'name': 'HEB',
     'domain': 'heb.com',
-    'rate': 0.40
+    'rate': 0.40,
+    'borrowing_capacity': 0.3,
   },
   {
     'name': 'Staff',
     'domain': 'staff.com',
     'rate': 0.43,
+    'borrowing_capacity': 0.25,
   }
 ]
 
