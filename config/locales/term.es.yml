@@ -1,0 +1,14 @@
+es:
+  activerecord:
+    models:
+      term: "Plazo"
+    attributes:
+      term:
+        duration: "Duración"
+        durationType: "Medida"
+    errors:
+      models:
+        term:
+          attributes:
+            duration:
+              taken: "%{value} ya está en uso"
