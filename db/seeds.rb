@@ -153,6 +153,13 @@ user_examples = [
     'roles': [:pre_authorized]
   },
   {
+    'email': 'nuevo@soriana.com',
+    'first_name': 'Rosalia',
+    'last_name': 'Gaytán',
+    'phone': '(035)342-5728',
+    'status': 'new'
+  },
+  {
     'email': 'jmercado@soriana.com',
     'first_name': 'Rosalia',
     'last_name': 'Gaytán',
@@ -302,7 +309,7 @@ user_examples = [
     "status": "pre-authorized",
     "credit": {
       "status": "pre-authorized",
-      "loan": 20000,
+      "loan": 25000,
       "term_id": 1,
     },
   }
@@ -338,8 +345,9 @@ def find_or_initialize_and_update_user(user_params)
   puts user.errors.full_messages if user.invalid?
 
   if credit_params.present?
-    credit = Credit.new(credit_params)
-    credit.borrower = user
+    credit_term_id = credit_params.delete(:term_id)
+    credit = user.credits.find_or_initialize_by(term_id: credit_term_id)
+    credit.assign_attributes(credit_params)
     action = credit.new_record? ? 'Creating' : credit.changed? ? 'Updating' : nil
     return if action.nil?
     puts "#{action} credit for #{user.email}"
