@@ -52,14 +52,13 @@ def find_or_initialize_and_update_term(term_params)
   # Assign the rest of the term_params to the term, whether it's a new or found record
   term.assign_attributes(term_params)
 
-  # Validate the term record. This will run the validations in the Term model
-  puts term.errors.full_messages if term.invalid?
-
   # Save the term record to the database. This will perform an INSERT or UPDATE depending on whether the record is new or existing
-  if term.new_record? || term.changed?
-    puts 'Creating new Term'
-    term.save
-  end
+  action = term.new_record? ? 'Creating' : term.changed? ? 'Updating' : nil
+  return if action.nil?
+  
+  puts "#{action} term #{term.duration} #{term.duration_type}"
+  term.save
+  puts term.errors.full_messages if term.invalid?
 end
 
 # Create or update the terms
@@ -90,15 +89,6 @@ company_examples = [
   }
 ]
 
-def save_user(user_to_save) 
-  action = user_to_save.new_record? ? 'Creating' : user_to_save.changed? ? 'Updating' : nil
-  return if action.nil?
-  
-  puts "#{action} new user #{user_to_save.email}"
-  user_to_save.assign_attributes password: '123456'
-  user_to_save.save
-end
-
 def find_or_initialize_and_update_company(company_params)
   # Extract the domain from the company params
   domain = company_params.delete(:domain)
@@ -112,14 +102,14 @@ def find_or_initialize_and_update_company(company_params)
   # Assign two random terms to the company
   company.terms = Term.all.sample(2)
 
+  # Save the company record to the database. This will perform an INSERT or UPDATE depending on whether the record is new or existing
+  action = company.new_record? ? 'Creating' : company.changed? ? 'Updating' : nil
+  return if action.nil?
+  
+  puts "#{action} company #{company.name}"
+  company.save
   # Validate the company record. This will run the validations in the Company model
   puts company.errors.full_messages if company.invalid?
-
-  # Save the company record to the database. This will perform an INSERT or UPDATE depending on whether the record is new or existing
-  if company.new_record? || company.changed?
-    puts 'Creating new Company'
-    company.save
-  end
 end
 
 # Create or update the companies
@@ -127,51 +117,41 @@ company_examples.each do |company|
   find_or_initialize_and_update_company company
 end
 
-# generate staff users
-
-# User with "request" role
-user = User.find_or_initialize_by(email: 'requests@staff.com')
-user.assign_attributes(
-  first_name: 'Request',
-  last_name: 'User',
-  phone: '1234567890',
-  status: 'pre-authorized',
-)
-save_user user
-
-# Validate the user record. This will run the validations in the User model
-puts user.errors.full_messages if user.invalid?
-user.add_role :requests
-
-# User with "admin" role
-user = User.find_or_initialize_by(email: 'admin@staff.com')
-user.assign_attributes(
-  first_name: 'Admin',
-  last_name: 'User',
-  phone: '1234567890',
-  status: 'pre-authorized',
-)
-save_user user
-# Validate the user record. This will run the validations in the User model
-puts user.errors.full_messages if user.invalid?
-user.add_role :admin
-
-# User with "pre-authorizations" role
-user = User.find_or_initialize_by(email: 'pre-auth@staff.com')
-user.assign_attributes(
-  first_name: 'Pre-Authorization',
-  last_name: 'User',
-  phone: '1234567890',
-  status: 'pre-authorized',
-)
-save_user user
-# Validate the user record. This will run the validations in the User model
-puts user.errors.full_messages if user.invalid?
-user.add_role :pre_authorizations
-
 # generate users
 
 user_examples = [
+  {
+    'first_name': 'Admin',
+    'last_name': 'User',
+    'email': 'admin@staff.com',
+    'phone': '1234567890',
+    'status': 'pre-authorized',
+    'roles': [:admin]
+  },
+  {
+    'first_name': 'Request',
+    'last_name': 'User',
+    'email': 'requests@staff.com',
+    'phone': '1234567890',
+    'status': 'pre-authorized',
+    'roles': [:requests]
+  },
+  {
+    'first_name': 'Pre-Authorization',
+    'last_name': 'User',
+    'email': 'pre-authorizations@staff.com',
+    'phone': '1234567890',
+    'status': 'pre-authorized',
+    'roles': [:pre_authorizations]
+  },
+  {
+    'first_name': 'Pre-Authorized',
+    'last_name': 'User',
+    'email': 'pre-authorized@staff.com',
+    'phone': '1234567890',
+    'status': 'pre-authorized',
+    'roles': [:pre_authorized]
+  },
   {
     'email': 'jmercado@soriana.com',
     'first_name': 'Rosalia',
@@ -183,7 +163,7 @@ user_examples = [
     'address_line_two': '362 Interior 174',
     'city': 'Vieja Bolivia',
     'state': 'ZAC',
-    'postal_code': '63958-1681',
+    'postal_code': '63958',
     'country': 'Mexico',
     'rfc': 'DCUE228616JPD',
     'salary': 57213,
@@ -201,7 +181,7 @@ user_examples = [
     'address_line_two': '674 045',
     'city': 'San Lilia los bajos',
     'state': 'ROO',
-    'postal_code': '57288-6820',
+    'postal_code': '57288',
     'country': 'Mexico',
     'rfc': 'NTFV436646PGD',
     'salary': 51750,
@@ -219,7 +199,7 @@ user_examples = [
     'address_line_two': '578 884',
     'city': 'Nueva Pakistán',
     'state': 'ZAC',
-    'postal_code': '22008-6424',
+    'postal_code': '22008',
     'country': 'Mexico',
     'rfc': 'YABK231957NPD',
     'salary': 41233,
@@ -237,7 +217,7 @@ user_examples = [
     'address_line_two': '673 Interior 492',
     'city': 'San Paulina de la Montaña',
     'state': 'MEX',
-    'postal_code': '10027-6474',
+    'postal_code': '10027',
     'country': 'Mexico',
     'rfc': 'KXEX462458QEX',
     'salary': 55961,
@@ -255,7 +235,7 @@ user_examples = [
     'address_line_two': 'Apto 302',
     'city': 'Guadalajara del Espíritu Santo',
     'state': 'JAL',
-    'postal_code': '44280-8423',
+    'postal_code': '44280',
     'country': 'Mexico',
     'rfc': 'MTZA580762HCL',
     'salary': 47500,
@@ -266,25 +246,62 @@ user_examples = [
     'email': 'luisa.perez@heb.com',
     'first_name': 'Luisa',
     'last_name': 'Perez',
-    'phone': '+52(55)765432109',
+    'phone': '525576543210',
     'employee_number': 'EMP012',
     'bank_account_number': 'BANK012',
     'address_line_one': 'Privada del Bosque 1987 Residencial Las Flores',
     'address_line_two': 'Casa 45',
     'city': 'Ciudad Juárez',
     'state': 'CHH',
-    'postal_code': '32560-4982',
+    'postal_code': '32560',
     'country': 'Mexico',
     'rfc': 'PRZL850326MJ2',
     'salary': 62000,
     'salary_frequency': 'M',
     'status': 'pre-authorization'
+  },
+  {
+    "email": "juan.rodriguez@heb.com",
+    "first_name": "Juan",
+    "last_name": "Rodriguez",
+    "phone": "528187654321",
+    "employee_number": "EMP034",
+    "bank_account_number": "BANK034",
+    "address_line_one": "Avenida Revolución 760 Colonia San Pedro",
+    "address_line_two": "Departamento 502",
+    "city": "Monterrey",
+    "state": "NLE",
+    "postal_code": "64001",
+    "country": "Mexico",
+    "rfc": "RDZJ880907HJC",
+    "salary": 68000,
+    "salary_frequency": "M",
+    "status": "pre-authorized"
+  },
+  {
+    "email": "maria.lopez@heb.com",
+    "first_name": "Maria",
+    "last_name": "Lopez",
+    "phone": "525598765432",
+    "employee_number": "EMP056",
+    "bank_account_number": "BANK056",
+    "address_line_one": "Calle Olivo 300 Colonia Las Margaritas",
+    "address_line_two": "Edificio B, Piso 3",
+    "city": "Guadalajara",
+    "state": "JAL",
+    "postal_code": "44100",
+    "country": "Mexico",
+    "rfc": "LPEM900415HDF",
+    "salary": 70000,
+    "salary_frequency": "M",
+    "status": "pre-authorized"
   }
 ]
 
 def find_or_initialize_and_update_user(user_params)
   # Extract the email from the user params
   email = user_params.delete(:email)
+  roles = user_params.delete(:roles)
 
   # Find an existing user by email or initialize a new one with the provided email
   user = User.find_or_initialize_by(email: email)
@@ -292,11 +309,21 @@ def find_or_initialize_and_update_user(user_params)
   # Assign the rest of the user_params to the user, whether it's a new or found record
   user.assign_attributes(user_params)
 
-  # Validate the user record. This will run the validations in the User model
-  puts user.errors.full_messages if user.invalid?
+  if roles.present?
+    roles.each do |role|
+      user.add_role role
+    end
+  end
 
-  # Save the user record to the database. This will perform an INSERT or UPDATE depending on whether the record is new or existing
-  save_user user
+  action = user.new_record? ? 'Creating' : user.changed? ? 'Updating' : nil
+  return if action.nil?
+  
+  puts "#{action} user #{user.email}"
+  user.assign_attributes password: '123456'
+  user.save
+
+  # Validate the user record. This will run the validations in the user model
+  puts user.errors.full_messages if user.invalid?
 end
 
 # Create or update the users
