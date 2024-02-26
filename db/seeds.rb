@@ -276,7 +276,12 @@ user_examples = [
     "rfc": "RDZJ880907HJC",
     "salary": 68000,
     "salary_frequency": "M",
-    "status": "pre-authorized"
+    "status": "pre-authorized",
+    "credit": {
+      "status": "pre-authorized",
+      "loan": 10000,
+      "term_id": 2,
+    },
   },
   {
     "email": "maria.lopez@heb.com",
@@ -294,7 +299,12 @@ user_examples = [
     "rfc": "LPEM900415HDF",
     "salary": 70000,
     "salary_frequency": "M",
-    "status": "pre-authorized"
+    "status": "pre-authorized",
+    "credit": {
+      "status": "pre-authorized",
+      "loan": 20000,
+      "term_id": 1,
+    },
   }
 ]
 
@@ -302,6 +312,7 @@ def find_or_initialize_and_update_user(user_params)
   # Extract the email from the user params
   email = user_params.delete(:email)
   roles = user_params.delete(:roles)
+  credit_params = user_params.delete(:credit)
 
   # Find an existing user by email or initialize a new one with the provided email
   user = User.find_or_initialize_by(email: email)
@@ -316,14 +327,25 @@ def find_or_initialize_and_update_user(user_params)
   end
 
   action = user.new_record? ? 'Creating' : user.changed? ? 'Updating' : nil
-  return if action.nil?
-  
-  puts "#{action} user #{user.email}"
-  user.assign_attributes password: '123456'
-  user.save
+
+  if action.present?
+    puts "#{action} user #{user.email}"
+    user.assign_attributes password: '123456'
+    user.save
+  end
 
   # Validate the user record. This will run the validations in the user model
   puts user.errors.full_messages if user.invalid?
+
+  if credit_params.present?
+    credit = Credit.new(credit_params)
+    credit.borrower = user
+    action = credit.new_record? ? 'Creating' : credit.changed? ? 'Updating' : nil
+    return if action.nil?
+    puts "#{action} credit for #{user.email}"
+    credit.save
+    puts credit.errors.full_messages if credit.invalid?
+  end
 end
 
 # Create or update the users
