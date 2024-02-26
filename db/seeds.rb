@@ -135,7 +135,7 @@ user.assign_attributes(
   first_name: 'Request',
   last_name: 'User',
   phone: '1234567890',
-  status: 'approved',
+  status: 'pre-authorized',
 )
 save_user user
 
@@ -149,7 +149,7 @@ user.assign_attributes(
   first_name: 'Admin',
   last_name: 'User',
   phone: '1234567890',
-  status: 'approved',
+  status: 'pre-authorized',
 )
 save_user user
 # Validate the user record. This will run the validations in the User model
@@ -162,7 +162,7 @@ user.assign_attributes(
   first_name: 'Pre-Authorization',
   last_name: 'User',
   phone: '1234567890',
-  status: 'approved',
+  status: 'pre-authorized',
 )
 save_user user
 # Validate the user record. This will run the validations in the User model
@@ -260,7 +260,7 @@ user_examples = [
     'rfc': 'MTZA580762HCL',
     'salary': 47500,
     'salary_frequency': 'M',
-    'status': 'approved'
+    'status': 'pre-authorization'
   },
   {
     'email': 'luisa.perez@heb.com',
@@ -278,7 +278,7 @@ user_examples = [
     'rfc': 'PRZL850326MJ2',
     'salary': 62000,
     'salary_frequency': 'M',
-    'status': 'approved'
+    'status': 'pre-authorization'
   }
 ]
 
