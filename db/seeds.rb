@@ -287,7 +287,7 @@ user_examples = [
     "salary_frequency": "M",
     "status": "pre-authorized",
     "credit": {
-      "status": "pre-authorized",
+      "status": "new",
       "loan": 10000,
       "term_id": 2,
     },
@@ -310,10 +310,33 @@ user_examples = [
     "salary_frequency": "M",
     "status": "pre-authorized",
     "credit": {
-      "status": "pre-authorized",
+      "status": "pending",
       "loan": 25000,
       "term_id": 1,
     },
+  },
+  {
+    "email": "carlos.gomez@soriana.com",
+    "first_name": "Carlos",
+    "last_name": "Gómez",
+    "phone": "5587654321",
+    "employee_number": "EMP208",
+    "bank_account_number": "CUENTA208",
+    "address_line_one": "Av. Insurgentes Sur 800",
+    "address_line_two": "Oficina 303, Edificio Boreal",
+    "city": "Ciudad de México",
+    "state": "MEX",
+    "postal_code": "03920",
+    "country": "México",
+    "rfc": "GOMC880326HDF",
+    "salary": 75000,
+    "salary_frequency": "M",
+    "status": "pre-authorized",
+    "credit": {
+      "status": "pending",
+      "loan": 10000,
+      "term_id": 5
+    }
   },
   {
     "email": "luisa.martinez@soriana.com",
