@@ -1,0 +1,15 @@
+es:
+  activerecord:
+    models:
+      credit: "Crédito"
+    attributes:
+      credit:
+        status: "Estatus"
+        loan: "Préstamo"
+        borrower: "Solicitante"
+    errors:
+      models:
+        credit:
+          attributes:
+            borrower:
+              required: "es requerido"
