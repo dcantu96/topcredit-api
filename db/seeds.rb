@@ -1,14 +1,8 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+
+puts "Seeds started"
 
 if Doorkeeper::Application.count.zero?
+  puts "Creating Doorkeeper application: topcredit-app"
   Doorkeeper::Application.create(name: "topcredit-app", redirect_uri: "", scopes: "")
 end
 # To get the client_id and client_secret for the application, run the following commands in the Rails console:
@@ -151,6 +145,14 @@ user_examples = [
     'phone': '1234567890',
     'status': 'pre-authorized',
     'roles': [:pre_authorized]
+  },
+  {
+    'first_name': 'Auhorization',
+    'last_name': 'User',
+    'email': 'authorizations@staff.com',
+    'phone': '1234567890',
+    'status': 'pre-authorized',
+    'roles': [:authorizations]
   },
   {
     'email': 'nuevo@soriana.com',
@@ -312,7 +314,53 @@ user_examples = [
       "loan": 25000,
       "term_id": 1,
     },
-  }
+  },
+  {
+    "email": "luisa.martinez@soriana.com",
+    "first_name": "Luisa",
+    "last_name": "Martínez",
+    "phone": "5543219876",
+    "employee_number": "EMP102",
+    "bank_account_number": "CUENTA102",
+    "address_line_one": "Paseo de la Reforma 305",
+    "address_line_two": "Departamento 501, Torre C",
+    "city": "Ciudad de México",
+    "state": "MEX",
+    "postal_code": "06500",
+    "country": "México",
+    "rfc": "MRTL850224MJ2",
+    "salary": 85000,
+    "salary_frequency": "M",
+    "status": "pre-authorized",
+    "credit": {
+      "status": "authorized",
+      "loan": 20000,
+      "term_id": 3
+    }
+  },
+  {
+    "email": "roberto.alvarez@heb.com",
+    "first_name": "Roberto",
+    "last_name": "Álvarez",
+    "phone": "5587654321",
+    "employee_number": "EMP145",
+    "bank_account_number": "BANCO145",
+    "address_line_one": "Boulevard de las Naciones 1489",
+    "address_line_two": "Condominio Dalia, Casa 8",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39890",
+    "country": "México",
+    "rfc": "AERV640918HGR",
+    "salary": 65000,
+    "salary_frequency": "M",
+    "status": "pre-authorized",
+    "credit": {
+      "status": "authorized",
+      "loan": 20000,
+      "term_id": 3
+    }
+}
 ]
 
 def find_or_initialize_and_update_user(user_params)
@@ -327,18 +375,21 @@ def find_or_initialize_and_update_user(user_params)
   # Assign the rest of the user_params to the user, whether it's a new or found record
   user.assign_attributes(user_params)
 
-  if roles.present?
-    roles.each do |role|
-      user.add_role role
-    end
-  end
-
   action = user.new_record? ? 'Creating' : user.changed? ? 'Updating' : nil
 
   if action.present?
     puts "#{action} user #{user.email}"
     user.assign_attributes password: '123456'
     user.save
+  end
+
+  if roles.present?
+    roles.each do |role|
+      return if user.has_role? role
+
+      puts "- Assigning role #{role}"
+      user.add_role role
+    end
   end
 
   # Validate the user record. This will run the validations in the user model
@@ -350,7 +401,7 @@ def find_or_initialize_and_update_user(user_params)
     credit.assign_attributes(credit_params)
     action = credit.new_record? ? 'Creating' : credit.changed? ? 'Updating' : nil
     return if action.nil?
-    puts "#{action} credit for #{user.email}"
+    puts "- #{action} credit"
     credit.save
     puts credit.errors.full_messages if credit.invalid?
   end
@@ -360,4 +411,6 @@ end
 user_examples.each do |user|
   find_or_initialize_and_update_user user
 end
+
+puts "Seeds finished"
 
