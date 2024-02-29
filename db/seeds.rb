@@ -155,6 +155,14 @@ user_examples = [
     'roles': [:authorizations]
   },
   {
+    'first_name': 'Dispersions',
+    'last_name': 'User',
+    'email': 'dispersions@staff.com',
+    'phone': '1234567890',
+    'status': 'pre-authorized',
+    'roles': [:dispersions]
+  },
+  {
     'email': 'nuevo@soriana.com',
     'first_name': 'Rosalia',
     'last_name': 'Gaytán',
