@@ -21,6 +21,9 @@ gem 'doorkeeper'
 # Role management for this App
 gem 'rolify'
 
+# Storage tools
+gem 'aws-sdk-s3', require: false
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
