@@ -2,4 +2,67 @@ class Credit < ApplicationRecord
   validates_inclusion_of :status, in: %w( new pending invalid-documentation authorized denied dispersed )
   belongs_to :borrower, foreign_key: 'user_id', class_name: 'User'
   belongs_to :term
+  has_one_attached :contract
+  has_one_attached :authorization
+  has_one_attached :payroll_receipt
+
+  def contract_url
+    contract.blob.url if contract.attached?
+  end
+
+  def contract_filename
+    contract.blob.filename.to_s if contract.attached?
+  end
+
+  def contract_size
+    contract.blob.byte_size if contract.attached?
+  end
+
+  def contract_content_type
+    contract.blob.content_type if contract.attached?
+  end
+
+  def contract_uploaded_at
+    contract.blob.created_at if contract.attached?
+  end
+
+  def authorization_url
+    authorization.blob.url if authorization.attached?
+  end
+
+  def authorization_filename
+    authorization.blob.filename.to_s if authorization.attached?
+  end
+
+  def authorization_size
+    authorization.blob.byte_size if authorization.attached?
+  end
+
+  def authorization_content_type
+    authorization.blob.content_type if authorization.attached?
+  end
+
+  def authorization_uploaded_at
+    authorization.blob.created_at if authorization.attached?
+  end
+
+  def payroll_receipt_url
+    payroll_receipt.blob.url if payroll_receipt.attached?
+  end
+
+  def payroll_receipt_filename
+    payroll_receipt.blob.filename.to_s if payroll_receipt.attached?
+  end
+
+  def payroll_receipt_size
+    payroll_receipt.blob.byte_size if payroll_receipt.attached?
+  end
+
+  def payroll_receipt_content_type
+    payroll_receipt.blob.content_type if payroll_receipt.attached?
+  end
+
+  def payroll_receipt_uploaded_at
+    payroll_receipt.blob.created_at if payroll_receipt.attached?
+  end
 end
