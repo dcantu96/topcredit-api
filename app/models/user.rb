@@ -18,6 +18,8 @@ class User < ApplicationRecord
          dependent: :delete_all # or :destroy if you need callbacks
   
   has_many :credits, dependent: :destroy
+  has_one_attached :identity_document
+  
   belongs_to :handled_by, class_name: 'User', optional: true
   
   validates :first_name, presence: true
@@ -30,7 +32,26 @@ class User < ApplicationRecord
   def all_roles
     roles.pluck(:name)
   end
-  
+
+  def identity_document_url
+    identity_document.blob.url if identity_document.attached?
+  end
+
+  def identity_document_filename
+    identity_document.blob.filename.to_s if identity_document.attached?
+  end
+
+  def identity_document_size
+    identity_document.blob.byte_size if identity_document.attached?
+  end
+
+  def identity_document_content_type
+    identity_document.blob.content_type if identity_document.attached?
+  end
+
+  def identity_document_uploaded_at
+    identity_document.blob.created_at if identity_document.attached?
+  end
   
   private
 
