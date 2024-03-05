@@ -1,11 +1,13 @@
 class Api::UserResource < JSONAPI::Resource
-  # before_create :test_identify_document
   attributes :first_name, :last_name, :email, :phone, :password, :employee_number,
              :bank_account_number, :address_line_one, :address_line_two, :city,
              :state, :postal_code, :country, :rfc, :salary, :salary_frequency,
              :status, :identity_document, :identity_document_url, :identity_document_filename,
              :identity_document_size, :identity_document_content_type, :identity_document_uploaded_at, 
-             :created_at, :updated_at
+             :bank_statement, :bank_statement_url, :bank_statement_filename, :bank_statement_size,
+             :bank_statement_content_type, :bank_statement_uploaded_at, :payroll_receipt, :payroll_receipt_url,
+             :payroll_receipt_filename, :payroll_receipt_size, :payroll_receipt_content_type, 
+             :payroll_receipt_uploaded_at, :created_at, :updated_at
   
   has_many :credits
   has_one :handled_by, class_name: 'User'
@@ -20,6 +22,6 @@ class Api::UserResource < JSONAPI::Resource
   }
   
   def fetchable_fields
-    super - [:password, :identity_document]
+    super - [:password, :identity_document, :bank_statement, :payroll_receipt]
   end
 end

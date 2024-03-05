@@ -19,6 +19,8 @@ class User < ApplicationRecord
   
   has_many :credits, dependent: :destroy
   has_one_attached :identity_document
+  has_one_attached :bank_statement
+  has_one_attached :payroll_receipt
   
   belongs_to :handled_by, class_name: 'User', optional: true
   
@@ -51,6 +53,46 @@ class User < ApplicationRecord
 
   def identity_document_uploaded_at
     identity_document.blob.created_at if identity_document.attached?
+  end
+
+  def bank_statement_url
+    bank_statement.blob.url if bank_statement.attached?
+  end
+
+  def bank_statement_filename
+    bank_statement.blob.filename.to_s if bank_statement.attached?
+  end
+
+  def bank_statement_size
+    bank_statement.blob.byte_size if bank_statement.attached?
+  end
+
+  def bank_statement_content_type
+    bank_statement.blob.content_type if bank_statement.attached?
+  end
+
+  def bank_statement_uploaded_at
+    bank_statement.blob.created_at if bank_statement.attached?
+  end
+
+  def payroll_receipt_url
+    payroll_receipt.blob.url if payroll_receipt.attached?
+  end
+
+  def payroll_receipt_filename
+    payroll_receipt.blob.filename.to_s if payroll_receipt.attached?
+  end
+
+  def payroll_receipt_size
+    payroll_receipt.blob.byte_size if payroll_receipt.attached?
+  end
+
+  def payroll_receipt_content_type
+    payroll_receipt.blob.content_type if payroll_receipt.attached?
+  end
+
+  def payroll_receipt_uploaded_at
+    payroll_receipt.blob.created_at if payroll_receipt.attached?
   end
   
   private
