@@ -21,6 +21,7 @@ class User < ApplicationRecord
   has_one_attached :identity_document
   has_one_attached :bank_statement
   has_one_attached :payroll_receipt
+  has_one_attached :proof_of_address
   
   belongs_to :handled_by, class_name: 'User', optional: true
   
@@ -93,6 +94,26 @@ class User < ApplicationRecord
 
   def payroll_receipt_uploaded_at
     payroll_receipt.blob.created_at if payroll_receipt.attached?
+  end
+
+  def proof_of_address_url
+    proof_of_address.blob.url if proof_of_address.attached?
+  end
+
+  def proof_of_address_filename
+    proof_of_address.blob.filename.to_s if proof_of_address.attached?
+  end
+
+  def proof_of_address_size
+    proof_of_address.blob.byte_size if proof_of_address.attached?
+  end
+
+  def proof_of_address_content_type
+    proof_of_address.blob.content_type if proof_of_address.attached?
+  end
+
+  def proof_of_address_uploaded_at
+    proof_of_address.blob.created_at if proof_of_address.attached?
   end
   
   private
