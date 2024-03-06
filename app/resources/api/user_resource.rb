@@ -9,7 +9,7 @@ class Api::UserResource < JSONAPI::Resource
              :payroll_receipt_filename, :payroll_receipt_size, :payroll_receipt_content_type, 
              :payroll_receipt_uploaded_at, :proof_of_address, :proof_of_address_url,
              :proof_of_address_filename, :proof_of_address_size, :proof_of_address_content_type,
-             :proof_of_address_uploaded_at, :created_at, :updated_at
+             :proof_of_address_uploaded_at, :reason, :created_at, :updated_at
   
   has_many :credits
   has_one :handled_by, class_name: 'User'
