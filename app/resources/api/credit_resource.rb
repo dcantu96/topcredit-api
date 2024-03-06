@@ -5,7 +5,7 @@ class Api::CreditResource < JSONAPI::Resource
              :authorization_size, :authorization_content_type, :authorization_uploaded_at,
              :payroll_receipt, :payroll_receipt_url, :payroll_receipt_filename,
              :payroll_receipt_size, :payroll_receipt_content_type, :payroll_receipt_uploaded_at,
-             :created_at, :updated_at
+             :reason, :created_at, :updated_at
   has_one :borrower, foreign_key: 'user_id', class_name: 'User'
   has_one :term
 
