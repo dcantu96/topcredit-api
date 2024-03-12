@@ -391,7 +391,30 @@ user_examples = [
       "loan": 20000,
       "term_id": 3
     }
-}
+  },
+  {
+    "email": "jorge.rodriguez@heb.com",
+    "first_name": "Jorge",
+    "last_name": "Rodríguez",
+    "phone": "5587654321",
+    "employee_number": "EMP145",
+    "bank_account_number": "BANCO145",
+    "address_line_one": "Boulevard de las Naciones 1489",
+    "address_line_two": "Condominio Dalia, Casa 8",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39890",
+    "country": "México",
+    "rfc": "AERV640918HGR",
+    "salary": 65000,
+    "salary_frequency": "M",
+    "status": "pre-authorized",
+    "credit": {
+      "status": "dispersed",
+      "loan": 20000,
+      "term_id": 3
+    }
+  }
 ]
 
 def find_or_initialize_and_update_user(user_params)
