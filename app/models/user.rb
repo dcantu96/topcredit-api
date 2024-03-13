@@ -28,7 +28,7 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :phone, presence: true
-  validates_inclusion_of :status, in: %w( new pending pre-authorization pre-authorized invalid_documentation denied )
+  validates_inclusion_of :status, in: %w( new pending pre-authorization pre-authorized invalid-documentation denied )
   validates_inclusion_of :salary_frequency, in: %w( Q M ), allow_nil: true
   validates_inclusion_of :state, in: %w( AGU BCN BCS CAM CHP CHH COA COL DUR GUA GRO HID JAL MEX MIC MOR NAY NLE OAX PUE QUE ROO SLP SIN SON TAB TAM TLA VER YUC ZAC ), allow_nil: true
 
