@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_06_073547) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_30_191441) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_06_073547) do
     t.datetime "updated_at", null: false
     t.float "rate"
     t.float "borrowing_capacity"
+    t.string "employee_salary_frequency", default: "biweekly", null: false
   end
 
   create_table "credits", force: :cascade do |t|
