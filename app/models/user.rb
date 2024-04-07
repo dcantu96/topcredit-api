@@ -6,6 +6,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   
   validate :email_of_company_domain
+  validate :invalid_documentation_status
   
   has_many :access_grants,
          class_name: 'Doorkeeper::AccessGrant',
@@ -124,6 +125,12 @@ class User < ApplicationRecord
   def email_of_company_domain
     if Company.find_by(domain: email.split('@').last).nil?
       errors.add(:email, :invalid_domain)
+    end
+  end
+
+  def invalid_documentation_status
+    if status == 'invalid-documentation' && (identity_document_status != 'rejected' && bank_statement_status != 'rejected' && payroll_receipt_status != 'rejected' && proof_of_address_status != 'rejected')
+      errors.add(:status, :invalid_status_change)
     end
   end
 end
