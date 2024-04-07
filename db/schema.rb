@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_06_225557) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_07_211316) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -159,6 +159,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_06_225557) do
     t.string "status"
     t.bigint "handled_by_id"
     t.string "reason"
+    t.string "identity_document_status"
+    t.string "identity_document_rejection_reason"
+    t.string "bank_statement_status"
+    t.string "bank_statement_rejection_reason"
+    t.string "payroll_receipt_status"
+    t.string "payroll_receipt_rejection_reason"
+    t.string "proof_of_address_status"
+    t.string "proof_of_address_rejection_reason"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["handled_by_id"], name: "index_users_on_handled_by_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

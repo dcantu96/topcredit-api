@@ -30,6 +30,10 @@ class User < ApplicationRecord
   validates :phone, presence: true
   validates_inclusion_of :status, in: %w( new pending pre-authorization pre-authorized invalid-documentation denied )
   validates_inclusion_of :state, in: %w( AGU BCN BCS CAM CHP CHH COA COL DUR GUA GRO HID JAL MEX MIC MOR NAY NLE OAX PUE QUE ROO SLP SIN SON TAB TAM TLA VER YUC ZAC ), allow_nil: true
+  validates_inclusion_of :identity_document_status, in: %w( pending approved rejected ), allow_nil: true
+  validates_inclusion_of :bank_statement_status, in: %w( pending approved rejected ), allow_nil: true
+  validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
+  validates_inclusion_of :proof_of_address_status, in: %w( pending approved rejected ), allow_nil: true
 
   def all_roles
     roles.pluck(:name)
