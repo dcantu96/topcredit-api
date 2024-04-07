@@ -184,7 +184,6 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'DCUE228616JPD',
     'salary': 57213,
-    'salary_frequency': 'M',
     'status': 'pending'
   },
   {
@@ -202,7 +201,6 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'NTFV436646PGD',
     'salary': 51750,
-    'salary_frequency': 'M',
     'status': 'pending'
   },
   {
@@ -220,7 +218,6 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'YABK231957NPD',
     'salary': 41233,
-    'salary_frequency': 'Q',
     'status': 'pending'
   },
   {
@@ -238,7 +235,6 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'KXEX462458QEX',
     'salary': 55961,
-    'salary_frequency': 'M',
     'status': 'pending'
   },
   {
@@ -256,7 +252,6 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'MTZA580762HCL',
     'salary': 47500,
-    'salary_frequency': 'M',
     'status': 'pre-authorization'
   },
   {
@@ -274,7 +269,6 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'PRZL850326MJ2',
     'salary': 62000,
-    'salary_frequency': 'M',
     'status': 'pre-authorization'
   },
   {
@@ -292,7 +286,6 @@ user_examples = [
     "country": "Mexico",
     "rfc": "RDZJ880907HJC",
     "salary": 68000,
-    "salary_frequency": "M",
     "status": "pre-authorized",
     "credit": {
       "status": "new",
@@ -315,7 +308,6 @@ user_examples = [
     "country": "Mexico",
     "rfc": "LPEM900415HDF",
     "salary": 70000,
-    "salary_frequency": "M",
     "status": "pre-authorized",
     "credit": {
       "status": "pending",
@@ -338,7 +330,6 @@ user_examples = [
     "country": "México",
     "rfc": "GOMC880326HDF",
     "salary": 75000,
-    "salary_frequency": "M",
     "status": "pre-authorized",
     "credit": {
       "status": "pending",
@@ -361,7 +352,6 @@ user_examples = [
     "country": "México",
     "rfc": "MRTL850224MJ2",
     "salary": 85000,
-    "salary_frequency": "M",
     "status": "pre-authorized",
     "credit": {
       "status": "authorized",
@@ -384,7 +374,6 @@ user_examples = [
     "country": "México",
     "rfc": "AERV640918HGR",
     "salary": 65000,
-    "salary_frequency": "M",
     "status": "pre-authorized",
     "credit": {
       "status": "authorized",
@@ -407,7 +396,6 @@ user_examples = [
     "country": "México",
     "rfc": "AERV640918HGR",
     "salary": 65000,
-    "salary_frequency": "M",
     "status": "pre-authorized",
     "credit": {
       "status": "dispersed",

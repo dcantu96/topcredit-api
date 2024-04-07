@@ -7,7 +7,6 @@ es:
         state: "Estado"
         email: "Correo Electrónico"
         status: "Estatus"
-        salary_frequency: "Frecuencia de salario"
     errors:
       models:
         user:
@@ -18,5 +17,3 @@ es:
               inclusion: "%{value} no es válido"
             email:
               invalid_domain: "%{value} es un dominio no permitido"
-            salary_frequency:
-              inclusion: "%{value} no es válida"
