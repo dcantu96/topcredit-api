@@ -4,6 +4,8 @@ es:
       models:
         company:
           attributes:
+            terms:
+              invalid_terms: "Algunos plazos no son de tipo %{type}. Por favor, verifique los plazos."
             borrowing_capacity:
               greater_than_or_equal_to: "El valor debe ser mayor o igual a 0%"
               less_than_or_equal_to: "El valor debe ser menor o igual a 100%"
