@@ -1,10 +1,11 @@
 class Credit < ApplicationRecord
-  validates_inclusion_of :status, in: %w( new pending invalid-documentation authorized denied dispersed )
   belongs_to :borrower, foreign_key: 'user_id', class_name: 'User'
   belongs_to :term
   has_one_attached :contract
   has_one_attached :authorization
   has_one_attached :payroll_receipt
+
+  validates_inclusion_of :status, in: %w( new pending invalid-documentation authorized denied dispersed )
 
   def contract_url
     contract.blob.url if contract.attached?
