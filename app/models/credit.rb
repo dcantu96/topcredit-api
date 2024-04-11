@@ -9,6 +9,9 @@ class Credit < ApplicationRecord
   validates_inclusion_of :contract_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :authorization_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
+  validates_inclusion_of :installation_status, in: %w( installed ), allow_nil: true
+  validate :dispersed_credits_must_have_dispersed_at
+  validate :dispersed_credit_must_have_approved_documents
 
   def contract_url
     contract.blob.url if contract.attached?
@@ -74,6 +77,18 @@ class Credit < ApplicationRecord
 
   def invalid_documentation_status
     if status == 'invalid-documentation' && (contract_status != 'rejected' && authorization_status != 'rejected' && payroll_receipt_status != 'rejected')
+      errors.add(:status, :invalid_status_change)
+    end
+  end
+
+  def dispersed_credits_must_have_dispersed_at
+    if status == 'dispersed' && dispersed_at.nil?
+      errors.add(:dispersed_at, :blank)
+    end
+  end
+
+  def dispersed_credit_must_have_approved_documents
+    if status == 'dispersed' && (contract_status != 'approved' || authorization_status != 'approved' || payroll_receipt_status != 'approved')
       errors.add(:status, :invalid_status_change)
     end
   end

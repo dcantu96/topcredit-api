@@ -7,7 +7,7 @@ class Api::CreditResource < JSONAPI::Resource
              :payroll_receipt_size, :payroll_receipt_content_type, :payroll_receipt_uploaded_at,
              :reason, :contract_status, :contract_rejection_reason, :authorization_status,
              :authorization_rejection_reason, :payroll_receipt_status, :payroll_receipt_rejection_reason,
-             :created_at, :updated_at
+             :dispersed_at, :installation_status, :created_at, :updated_at
   has_one :borrower, foreign_key: 'user_id', class_name: 'User'
   has_one :term
 
