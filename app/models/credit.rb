@@ -6,6 +6,9 @@ class Credit < ApplicationRecord
   has_one_attached :payroll_receipt
 
   validates_inclusion_of :status, in: %w( new pending invalid-documentation authorized denied dispersed )
+  validates_inclusion_of :contract_status, in: %w( pending approved rejected ), allow_nil: true
+  validates_inclusion_of :authorization_status, in: %w( pending approved rejected ), allow_nil: true
+  validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
 
   def contract_url
     contract.blob.url if contract.attached?
@@ -65,5 +68,13 @@ class Credit < ApplicationRecord
 
   def payroll_receipt_uploaded_at
     payroll_receipt.blob.created_at if payroll_receipt.attached?
+  end
+
+  private
+
+  def invalid_documentation_status
+    if status == 'invalid-documentation' && (contract_status != 'rejected' && authorization_status != 'rejected' && payroll_receipt_status != 'rejected')
+      errors.add(:status, :invalid_status_change)
+    end
   end
 end

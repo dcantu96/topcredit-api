@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_07_211316) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_11_055329) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -60,6 +60,12 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_07_211316) do
     t.float "loan"
     t.bigint "term_id"
     t.string "reason"
+    t.string "contract_status"
+    t.string "contract_rejection_reason"
+    t.string "authorization_status"
+    t.string "authorization_rejection_reason"
+    t.string "payroll_receipt_status"
+    t.string "payroll_receipt_rejection_reason"
     t.index ["term_id"], name: "index_credits_on_term_id"
     t.index ["user_id"], name: "index_credits_on_user_id"
   end
