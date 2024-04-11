@@ -5,9 +5,6 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   
-  validate :email_of_company_domain
-  validate :invalid_documentation_status
-  
   has_many :access_grants,
          class_name: 'Doorkeeper::AccessGrant',
          foreign_key: :resource_owner_id,
@@ -23,8 +20,8 @@ class User < ApplicationRecord
   has_one_attached :bank_statement
   has_one_attached :payroll_receipt
   has_one_attached :proof_of_address
-  
   belongs_to :handled_by, class_name: 'User', optional: true
+  
   
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -35,6 +32,8 @@ class User < ApplicationRecord
   validates_inclusion_of :bank_statement_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :proof_of_address_status, in: %w( pending approved rejected ), allow_nil: true
+  validate :email_of_company_domain
+  validate :invalid_documentation_status
 
   def all_roles
     roles.pluck(:name)
