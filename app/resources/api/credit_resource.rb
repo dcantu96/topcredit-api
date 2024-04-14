@@ -9,7 +9,7 @@ class Api::CreditResource < JSONAPI::Resource
              :authorization_rejection_reason, :payroll_receipt_status, :payroll_receipt_rejection_reason,
              :dispersed_at, :installation_status, :created_at, :updated_at
   has_one :borrower, foreign_key: 'user_id', class_name: 'User'
-  has_one :term
+  has_one :term_offering
 
   filter :status
 
