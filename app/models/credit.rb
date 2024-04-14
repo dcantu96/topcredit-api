@@ -1,6 +1,6 @@
 class Credit < ApplicationRecord
-  belongs_to :borrower, foreign_key: 'user_id', class_name: 'User'
-  belongs_to :term
+  belongs_to :borrower, foreign_key: 'user_id', class_name: 'User', optional: false
+  belongs_to :term_offering, optional: false
   has_one_attached :contract
   has_one_attached :authorization
   has_one_attached :payroll_receipt
@@ -12,6 +12,8 @@ class Credit < ApplicationRecord
   validates_inclusion_of :installation_status, in: %w( installed ), allow_nil: true
   validate :dispersed_credits_must_have_dispersed_at
   validate :dispersed_credit_must_have_approved_documents
+
+  scope :dispersed, -> { where(status: 'dispersed') }
 
   def contract_url
     contract.blob.url if contract.attached?
