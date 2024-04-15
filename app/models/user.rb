@@ -34,6 +34,7 @@ class User < ApplicationRecord
   validates_inclusion_of :proof_of_address_status, in: %w( pending approved rejected ), allow_nil: true
   validate :email_of_company_domain
   validate :invalid_documentation_status
+  validate :pre_authorization_status_must_have_approved_documents
 
   def all_roles
     roles.pluck(:name)
@@ -130,6 +131,22 @@ class User < ApplicationRecord
   def invalid_documentation_status
     if status == 'invalid-documentation' && (identity_document_status != 'rejected' && bank_statement_status != 'rejected' && payroll_receipt_status != 'rejected' && proof_of_address_status != 'rejected')
       errors.add(:status, :invalid_status_change)
+    end
+  end
+
+  def pre_authorization_status_must_have_approved_documents
+    if (status == 'pre-authorization' && 
+      (identity_document_status != 'approved' || 
+        identity_document == nil ||
+        bank_statement_status != 'approved' ||
+        bank_statement == nil ||
+        payroll_receipt_status != 'approved' ||
+        payroll_receipt == nil ||
+        proof_of_address_status != 'approved' ||
+        proof_of_address == nil
+      )
+    )
+      errors.add(:status, :pre_authorization_status_must_have_approved_documents)
     end
   end
 end

@@ -11,7 +11,8 @@ class Credit < ApplicationRecord
   validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :installation_status, in: %w( installed ), allow_nil: true
   validate :dispersed_credits_must_have_dispersed_at
-  validate :dispersed_credit_must_have_approved_documents
+  validate :dispersed_and_authorized_credit_must_have_approved_documents
+  validate :borrower_must_be_pre_authorized
 
   scope :dispersed, -> { where(status: 'dispersed') }
 
@@ -89,9 +90,15 @@ class Credit < ApplicationRecord
     end
   end
 
-  def dispersed_credit_must_have_approved_documents
-    if status == 'dispersed' && (contract_status != 'approved' || authorization_status != 'approved' || payroll_receipt_status != 'approved')
+  def dispersed_and_authorized_credit_must_have_approved_documents
+    if ((status == 'dispersed' || status == 'authorized') && (contract_status != 'approved' || authorization_status != 'approved' || payroll_receipt_status != 'approved'))
       errors.add(:status, :invalid_status_change)
+    end
+  end
+
+  def borrower_must_be_pre_authorized
+    if borrower.status != 'pre-authorized'
+      errors.add(:status, :borrower_must_be_pre_authorized)
     end
   end
 end
