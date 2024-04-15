@@ -1,3 +1,5 @@
+require 'open-uri'
+require 'tempfile'
 
 puts "Seeds started"
 
@@ -23,11 +25,6 @@ term_examples = [
     'name': '30 Meses'
   },
   {
-    'duration_type': 'years',
-    'duration': 4,
-    'name': '4 Años'
-  },
-  {
     'duration_type': 'two-weeks',
     'duration': 7,
     'name': '7 Quincenas'
@@ -36,6 +33,31 @@ term_examples = [
     'duration_type': 'months',
     'duration': 15,
     'name': '15 Meses'
+  },
+  {
+    'duration_type': 'two-weeks',
+    'duration': 21,
+    'name': '21 Quincenas'
+  },
+  {
+    'duration_type': 'months',
+    'duration': 45,
+    'name': '45 Meses'
+  },
+  {
+    'duration_type': 'two-weeks',
+    'duration': 28,
+    'name': '28 Quincenas'
+  },
+  {
+    'duration_type': 'months',
+    'duration': 6,
+    'name': '6 Meses'
+  },
+  {
+    'duration_type': 'two-weeks',
+    'duration': 35,
+    'name': '35 Quincenas'
   }
 ]
 
@@ -66,18 +88,28 @@ company_examples = [
   {
     'name': 'Soriana',
     'domain': 'soriana.com',
+    'employee_salary_frequency': 'biweekly',
     'rate': 0.5,
     'borrowing_capacity': 0.3,
   },
   {
     'name': 'HEB',
     'domain': 'heb.com',
+    'employee_salary_frequency': 'monthly',
     'rate': 0.40,
     'borrowing_capacity': 0.3,
   },
   {
+    'name': 'Walmart',
+    'domain': 'walmart.com',
+    'employee_salary_frequency': 'biweekly',
+    'rate': 0.45,
+    'borrowing_capacity': 0.25,
+  },
+  {
     'name': 'Staff',
     'domain': 'staff.com',
+    'employee_salary_frequency': 'monthly',
     'rate': 0.43,
     'borrowing_capacity': 0.25,
   }
@@ -90,11 +122,13 @@ def find_or_initialize_and_update_company(company_params)
   # Find an existing company by domain or initialize a new one with the provided domain
   company = Company.find_or_initialize_by(domain: domain)
 
+  
   # Assign the rest of the company_params to the company, whether it's a new or found record
   company.assign_attributes(company_params)
-
+  
+  term_duration_type = company.employee_salary_frequency == "biweekly" ? "two-weeks" : "months"
   # Assign two random terms to the company
-  company.terms = Term.all.sample(2)
+  company.terms = Term.where(duration_type: term_duration_type).sample(2)
 
   # Save the company record to the database. This will perform an INSERT or UPDATE depending on whether the record is new or existing
   action = company.new_record? ? 'Creating' : company.changed? ? 'Updating' : nil
@@ -119,7 +153,7 @@ user_examples = [
     'last_name': 'User',
     'email': 'admin@staff.com',
     'phone': '1234567890',
-    'status': 'pre-authorized',
+    'status': 'new',
     'roles': [:admin]
   },
   {
@@ -127,7 +161,7 @@ user_examples = [
     'last_name': 'User',
     'email': 'requests@staff.com',
     'phone': '1234567890',
-    'status': 'pre-authorized',
+    'status': 'new',
     'roles': [:requests]
   },
   {
@@ -135,7 +169,7 @@ user_examples = [
     'last_name': 'User',
     'email': 'pre-authorizations@staff.com',
     'phone': '1234567890',
-    'status': 'pre-authorized',
+    'status': 'new',
     'roles': [:pre_authorizations]
   },
   {
@@ -143,7 +177,7 @@ user_examples = [
     'last_name': 'User',
     'email': 'pre-authorized@staff.com',
     'phone': '1234567890',
-    'status': 'pre-authorized',
+    'status': 'new',
     'roles': [:pre_authorized]
   },
   {
@@ -151,7 +185,7 @@ user_examples = [
     'last_name': 'User',
     'email': 'authorizations@staff.com',
     'phone': '1234567890',
-    'status': 'pre-authorized',
+    'status': 'new',
     'roles': [:authorizations]
   },
   {
@@ -159,7 +193,7 @@ user_examples = [
     'last_name': 'User',
     'email': 'dispersions@staff.com',
     'phone': '1234567890',
-    'status': 'pre-authorized',
+    'status': 'new',
     'roles': [:dispersions]
   },
   {
@@ -184,7 +218,11 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'DCUE228616JPD',
     'salary': 57213,
-    'status': 'pending'
+    'status': 'pending',
+    'identity_document_status': 'pending',
+    'bank_statement_status': 'pending',
+    'payroll_receipt_status': 'pending',
+    'proof_of_address_status': 'pending'
   },
   {
     'email': 'benavidezfidel@heb.com',
@@ -201,7 +239,11 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'NTFV436646PGD',
     'salary': 51750,
-    'status': 'pending'
+    'status': 'pending',
+    'identity_document_status': 'pending',
+    'bank_statement_status': 'pending',
+    'payroll_receipt_status': 'pending',
+    'proof_of_address_status': 'pending'
   },
   {
     'email': 'benito75@soriana.com',
@@ -218,7 +260,11 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'YABK231957NPD',
     'salary': 41233,
-    'status': 'pending'
+    'status': 'pending',
+    'identity_document_status': 'pending',
+    'bank_statement_status': 'pending',
+    'payroll_receipt_status': 'pending',
+    'proof_of_address_status': 'pending'
   },
   {
     'email': 'irma81@heb.com',
@@ -235,7 +281,11 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'KXEX462458QEX',
     'salary': 55961,
-    'status': 'pending'
+    'status': 'pending',
+    'identity_document_status': 'pending',
+    'bank_statement_status': 'pending',
+    'payroll_receipt_status': 'pending',
+    'proof_of_address_status': 'pending'
   },
   {
     'email': 'alejandro58@soriana.com',
@@ -252,7 +302,11 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'MTZA580762HCL',
     'salary': 47500,
-    'status': 'pre-authorization'
+    'status': 'pre-authorization',
+    'identity_document_status': 'approved',
+    'bank_statement_status': 'approved',
+    'payroll_receipt_status': 'approved',
+    'proof_of_address_status': 'approved'
   },
   {
     'email': 'luisa.perez@heb.com',
@@ -269,7 +323,11 @@ user_examples = [
     'country': 'Mexico',
     'rfc': 'PRZL850326MJ2',
     'salary': 62000,
-    'status': 'pre-authorization'
+    'status': 'pre-authorization',
+    'identity_document_status': 'approved',
+    'bank_statement_status': 'approved',
+    'payroll_receipt_status': 'approved',
+    'proof_of_address_status': 'approved'
   },
   {
     "email": "juan.rodriguez@heb.com",
@@ -287,10 +345,13 @@ user_examples = [
     "rfc": "RDZJ880907HJC",
     "salary": 68000,
     "status": "pre-authorized",
+    'identity_document_status': 'approved',
+    'bank_statement_status': 'approved',
+    'payroll_receipt_status': 'approved',
+    'proof_of_address_status': 'approved',
     "credit": {
       "status": "new",
-      "loan": 10000,
-      "term_id": 2,
+      "loan": 10000
     },
   },
   {
@@ -309,10 +370,16 @@ user_examples = [
     "rfc": "LPEM900415HDF",
     "salary": 70000,
     "status": "pre-authorized",
+    'identity_document_status': 'approved',
+    'bank_statement_status': 'approved',
+    'payroll_receipt_status': 'approved',
+    'proof_of_address_status': 'approved',
     "credit": {
       "status": "pending",
-      "loan": 25000,
-      "term_id": 1,
+      "contract_status": "pending",
+      "authorization_status": "pending",
+      "payroll_receipt_status": "pending",
+      "loan": 25000
     },
   },
   {
@@ -331,10 +398,16 @@ user_examples = [
     "rfc": "GOMC880326HDF",
     "salary": 75000,
     "status": "pre-authorized",
+    'identity_document_status': 'approved',
+    'bank_statement_status': 'approved',
+    'payroll_receipt_status': 'approved',
+    'proof_of_address_status': 'approved',
     "credit": {
       "status": "pending",
-      "loan": 10000,
-      "term_id": 5
+      "contract_status": "pending",
+      "authorization_status": "pending",
+      "payroll_receipt_status": "pending",
+      "loan": 10000
     }
   },
   {
@@ -353,10 +426,16 @@ user_examples = [
     "rfc": "MRTL850224MJ2",
     "salary": 85000,
     "status": "pre-authorized",
+    'identity_document_status': 'approved',
+    'bank_statement_status': 'approved',
+    'payroll_receipt_status': 'approved',
+    'proof_of_address_status': 'approved',
     "credit": {
       "status": "authorized",
-      "loan": 20000,
-      "term_id": 3
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "loan": 20000
     }
   },
   {
@@ -375,10 +454,16 @@ user_examples = [
     "rfc": "AERV640918HGR",
     "salary": 65000,
     "status": "pre-authorized",
+    'identity_document_status': 'approved',
+    'bank_statement_status': 'approved',
+    'payroll_receipt_status': 'approved',
+    'proof_of_address_status': 'approved',
     "credit": {
       "status": "authorized",
-      "loan": 20000,
-      "term_id": 3
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "loan": 20000
     }
   },
   {
@@ -397,15 +482,22 @@ user_examples = [
     "rfc": "AERV640918HGR",
     "salary": 65000,
     "status": "pre-authorized",
+    'identity_document_status': 'approved',
+    'bank_statement_status': 'approved',
+    'payroll_receipt_status': 'approved',
+    'proof_of_address_status': 'approved',
     "credit": {
       "status": "dispersed",
-      "loan": 20000,
-      "term_id": 3
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": Time.now,
+      "loan": 20000
     }
   }
 ]
 
-def find_or_initialize_and_update_user(user_params)
+def find_or_initialize_and_update_user(user_params, file)
   # Extract the email from the user params
   email = user_params.delete(:email)
   roles = user_params.delete(:roles)
@@ -416,6 +508,23 @@ def find_or_initialize_and_update_user(user_params)
 
   # Assign the rest of the user_params to the user, whether it's a new or found record
   user.assign_attributes(user_params)
+
+  # Assign documents to the credit
+  # leave out "new" and "denied" statuses
+  if (user.status == 'pending' || user.status == 'pre-authorization' || user.status == 'pre-authorized' || user.status == 'invalid-documentation')
+    file.rewind
+    user.identity_document.attach(io: file, filename: 'identity_document.png', content_type: 'image/png') if user.identity_document.blank?
+    puts "Assigned identity_document to user #{user.email}"
+    file.rewind
+    user.bank_statement.attach(io: file, filename: 'bank_statement.png', content_type: 'image/png') if user.bank_statement.blank?
+    puts "Assigned bank_statement to user #{user.email}"
+    file.rewind
+    user.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png') if user.payroll_receipt.blank?
+    puts "Assigned payroll_receipt to user #{user.email}"
+    file.rewind
+    user.proof_of_address.attach(io: file, filename: 'proof_of_address.png', content_type: 'image/png') if user.proof_of_address.blank?
+    puts "Assigned proof_of_address to user #{user.email}"
+  end
 
   action = user.new_record? ? 'Creating' : user.changed? ? 'Updating' : nil
 
@@ -439,8 +548,23 @@ def find_or_initialize_and_update_user(user_params)
 
   if credit_params.present?
     credit_term_id = credit_params.delete(:term_id)
-    credit = user.credits.find_or_initialize_by(term_id: credit_term_id)
+    company = Company.find_by(domain: user.email.split('@').last)
+    term_offering = company.term_offerings.sample
+    puts "Assigning credit #{user.email} to term offering #{term_offering.term.duration} #{term_offering.term.duration_type} for company #{company.name}"
+    credit = user.credits.find_or_initialize_by(term_offering_id: term_offering.id)
     credit.assign_attributes(credit_params)
+
+    # Assign documents to the credit
+    # leave out "new" and "denied" statuses
+    if (credit.status == 'pending' || credit.status == 'invalid-documentation' || credit.status == 'authorized' || credit.status == 'dispersed')
+      file.rewind
+      credit.contract.attach(io: file, filename: 'contract.png', content_type: 'image/png') if credit.contract.blank?
+      file.rewind
+      credit.authorization.attach(io: file, filename: 'authorization.png', content_type: 'image/png') if credit.authorization.blank?
+      file.rewind
+      credit.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png') if credit.payroll_receipt.blank?
+    end
+
     action = credit.new_record? ? 'Creating' : credit.changed? ? 'Updating' : nil
     return if action.nil?
     puts "- #{action} credit"
@@ -450,9 +574,14 @@ def find_or_initialize_and_update_user(user_params)
 end
 
 # Create or update the users
-user_examples.each do |user|
-  find_or_initialize_and_update_user user
+file_path = Rails.root.join('db', 'assets', '150.png')
+File.open(file_path, 'rb') do |file|
+  user_examples.each do |user|
+    find_or_initialize_and_update_user user, file
+  end
 end
+
+
 
 puts "Seeds finished"
 
