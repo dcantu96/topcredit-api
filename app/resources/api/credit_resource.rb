@@ -11,9 +11,16 @@ class Api::CreditResource < JSONAPI::Resource
   has_one :borrower, foreign_key: 'user_id', class_name: 'User'
   has_one :term_offering
 
-  filter :status
+  filter :status, :company, :installation_status
 
   def fetchable_fields
     super - [:contract, :authorization, :payroll_receipt]
   end
+
+  filter :company, apply: ->(records, value, _options) {    
+    if value[0] == nil
+      return records
+    end
+    records.where(term_offering_id: TermOffering.where(company_id: value[0]).pluck(:id))
+  }
 end
