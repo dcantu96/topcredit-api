@@ -8,8 +8,8 @@ if Doorkeeper::Application.count.zero?
   Doorkeeper::Application.create(name: "topcredit-app", redirect_uri: "", scopes: "")
 end
 # To get the client_id and client_secret for the application, run the following commands in the Rails console:
-# Doorkeeper::Application.first.secret
 # Doorkeeper::Application.first.uid
+# Doorkeeper::Application.first.secret
 
 # generate terms
 
@@ -117,18 +117,19 @@ company_examples = [
 
 def find_or_initialize_and_update_company(company_params)
   # Extract the domain from the company params
-  domain = company_params.delete(:domain)
 
   # Find an existing company by domain or initialize a new one with the provided domain
-  company = Company.find_or_initialize_by(domain: domain)
+  company = Company.find_or_initialize_by(domain: company_params[:domain])
 
   
   # Assign the rest of the company_params to the company, whether it's a new or found record
-  company.assign_attributes(company_params)
+  company.assign_attributes(company_params.without(:domain))
   
   term_duration_type = company.employee_salary_frequency == "biweekly" ? "two-weeks" : "months"
   # Assign two random terms to the company
-  company.terms = Term.where(duration_type: term_duration_type).sample(2)
+  if company.terms.empty?
+    company.terms = Term.where(duration_type: term_duration_type).sample(2)
+  end
 
   # Save the company record to the database. This will perform an INSERT or UPDATE depending on whether the record is new or existing
   action = company.new_record? ? 'Creating' : company.changed? ? 'Updating' : nil
@@ -147,7 +148,17 @@ end
 
 # generate users
 
-user_examples = [
+users = [
+  {
+    'email': 'nuevo@soriana.com',
+    'first_name': 'Rosalia',
+    'last_name': 'Gaytán',
+    'phone': '(035)342-5728',
+    'status': 'new'
+  }
+]
+
+staff_users = [
   {
     'first_name': 'Admin',
     'last_name': 'User',
@@ -195,35 +206,32 @@ user_examples = [
     'phone': '1234567890',
     'status': 'new',
     'roles': [:dispersions]
-  },
-  {
-    'email': 'nuevo@soriana.com',
-    'first_name': 'Rosalia',
-    'last_name': 'Gaytán',
-    'phone': '(035)342-5728',
-    'status': 'new'
-  },
-  {
-    'email': 'jmercado@soriana.com',
-    'first_name': 'Rosalia',
-    'last_name': 'Gaytán',
-    'phone': '(035)342-5728',
-    'employee_number': 'EMP001',
-    'bank_account_number': 'BANK001',
-    'address_line_one': 'Eje vial República Democrática del Congo 965 798',
-    'address_line_two': '362 Interior 174',
-    'city': 'Vieja Bolivia',
-    'state': 'ZAC',
-    'postal_code': '63958',
-    'country': 'Mexico',
-    'rfc': 'DCUE228616JPD',
-    'salary': 57213,
-    'status': 'pending',
-    'identity_document_status': 'pending',
-    'bank_statement_status': 'pending',
-    'payroll_receipt_status': 'pending',
-    'proof_of_address_status': 'pending'
-  },
+  }
+]
+
+first_user_with_documents = {
+  'email': 'jmercado@soriana.com',
+  'first_name': 'Rosalia',
+  'last_name': 'Gaytán',
+  'phone': '(035)342-5728',
+  'employee_number': 'EMP001',
+  'bank_account_number': 'BANK001',
+  'address_line_one': 'Eje vial República Democrática del Congo 965 798',
+  'address_line_two': '362 Interior 174',
+  'city': 'Vieja Bolivia',
+  'state': 'ZAC',
+  'postal_code': '63958',
+  'country': 'Mexico',
+  'rfc': 'DCUE228616JPD',
+  'salary': 57213,
+  'status': 'pending',
+  'identity_document_status': 'pending',
+  'bank_statement_status': 'pending',
+  'payroll_receipt_status': 'pending',
+  'proof_of_address_status': 'pending'
+}
+
+users_with_documents = [
   {
     'email': 'benavidezfidel@heb.com',
     'first_name': 'Enrique',
@@ -329,6 +337,9 @@ user_examples = [
     'payroll_receipt_status': 'approved',
     'proof_of_address_status': 'approved'
   },
+]
+
+users_with_documents_and_credit = [
   {
     "email": "juan.rodriguez@heb.com",
     "first_name": "Juan",
@@ -353,35 +364,39 @@ user_examples = [
       "status": "new",
       "loan": 10000
     },
+  }
+]
+
+first_user_with_documents_and_credit_docs = {
+  "email": "maria.lopez@heb.com",
+  "first_name": "Maria",
+  "last_name": "Lopez",
+  "phone": "525598765432",
+  "employee_number": "EMP056",
+  "bank_account_number": "BANK056",
+  "address_line_one": "Calle Olivo 300 Colonia Las Margaritas",
+  "address_line_two": "Edificio B, Piso 3",
+  "city": "Guadalajara",
+  "state": "JAL",
+  "postal_code": "44100",
+  "country": "Mexico",
+  "rfc": "LPEM900415HDF",
+  "salary": 70000,
+  "status": "pre-authorized",
+  'identity_document_status': 'approved',
+  'bank_statement_status': 'approved',
+  'payroll_receipt_status': 'approved',
+  'proof_of_address_status': 'approved',
+  "credit": {
+    "status": "pending",
+    "contract_status": "pending",
+    "authorization_status": "pending",
+    "payroll_receipt_status": "pending",
+    "loan": 25000
   },
-  {
-    "email": "maria.lopez@heb.com",
-    "first_name": "Maria",
-    "last_name": "Lopez",
-    "phone": "525598765432",
-    "employee_number": "EMP056",
-    "bank_account_number": "BANK056",
-    "address_line_one": "Calle Olivo 300 Colonia Las Margaritas",
-    "address_line_two": "Edificio B, Piso 3",
-    "city": "Guadalajara",
-    "state": "JAL",
-    "postal_code": "44100",
-    "country": "Mexico",
-    "rfc": "LPEM900415HDF",
-    "salary": 70000,
-    "status": "pre-authorized",
-    'identity_document_status': 'approved',
-    'bank_statement_status': 'approved',
-    'payroll_receipt_status': 'approved',
-    'proof_of_address_status': 'approved',
-    "credit": {
-      "status": "pending",
-      "contract_status": "pending",
-      "authorization_status": "pending",
-      "payroll_receipt_status": "pending",
-      "loan": 25000
-    },
-  },
+}
+
+users_with_documents_and_credit_and_documents = [
   {
     "email": "carlos.gomez@soriana.com",
     "first_name": "Carlos",
@@ -494,21 +509,267 @@ user_examples = [
       "dispersed_at": Time.now,
       "loan": 20000
     }
+  },
+  {
+    "email": "carlos.torres@heb.com",
+    "first_name": "Carlos",
+    "last_name": "Torres",
+    "phone": "5539876543",
+    "employee_number": "EMP357",
+    "bank_account_number": "BANCO357",
+    "address_line_one": "Calle de la Reforma 505",
+    "address_line_two": "Torre Platino, Piso 11",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39400",
+    "country": "México",
+    "rfc": "TOMC730815HG1",
+    "salary": 75000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2024-04-20T15:00:00Z",
+      "loan": 30000
+    }
+  },
+  {
+    "email": "laura.jimenez@heb.com",
+    "first_name": "Laura",
+    "last_name": "Jimenez",
+    "phone": "5581234567",
+    "employee_number": "EMP468",
+    "bank_account_number": "BANCO468",
+    "address_line_one": "Paseo de la Vista 777",
+    "address_line_two": "Conjunto Sol, Apt 504",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39500",
+    "country": "México",
+    "rfc": "JIML920305MPL",
+    "salary": 68000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2024-05-01T09:30:00Z",
+      "loan": 22000
+    }
+  },
+  {
+    "email": "daniel.sanchez@heb.com",
+    "first_name": "Daniel",
+    "last_name": "Sanchez",
+    "phone": "5546789123",
+    "employee_number": "EMP579",
+    "bank_account_number": "BANCO579",
+    "address_line_one": "Av. Universidad 1234",
+    "address_line_two": "Villas del Mar, Casa 33",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39600",
+    "country": "México",
+    "rfc": "SAND890321HGR",
+    "salary": 72000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2024-05-15T14:45:00Z",
+      "loan": 28000
+    }
+  },
+  {
+    "email": "isabel.martinez@heb.com",
+    "first_name": "Isabel",
+    "last_name": "Martinez",
+    "phone": "5567891234",
+    "employee_number": "EMP680",
+    "bank_account_number": "BANCO680",
+    "address_line_one": "Privada Bosque Real 56",
+    "address_line_two": "Residencial Azul, Villa 12",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39700",
+    "country": "México",
+    "rfc": "MRTI720916HNR",
+    "salary": 69000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2024-02-10T16:30:00Z",
+      "loan": 24000
+    }
+  },
+  {
+    "email": "roberto.flores@heb.com",
+    "first_name": "Roberto",
+    "last_name": "Flores",
+    "phone": "5578912345",
+    "employee_number": "EMP791",
+    "bank_account_number": "BANCO791",
+    "address_line_one": "Calle del Puente 210",
+    "address_line_two": "Bloque 3, Apartamento 10",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39900",
+    "country": "México",
+    "rfc": "FLRR881022HDF",
+    "salary": 73000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2024-02-20T10:00:00Z",
+      "installation_status": "installed",
+      "installation_date": "2024-02-25T10:00:00Z",
+      "loan": 27000
+    }
+  },
+  {
+    "email": "ana.ramirez@heb.com",
+    "first_name": "Ana",
+    "last_name": "Ramirez",
+    "phone": "5529876543",
+    "employee_number": "EMP902",
+    "bank_account_number": "BANCO902",
+    "address_line_one": "Avenida Revolución 1450",
+    "address_line_two": "Condominio Esmeralda, Depto 5B",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39950",
+    "country": "México",
+    "rfc": "RAMA881205HMN",
+    "salary": 71000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2024-04-01T12:00:00Z",
+      "loan": 26000,
+      "installation_status": "installed",
+      "installation_date": "2024-04-02T15:00:00Z"
+    }
+  },
+  {
+    "email": "victor.gonzalez@heb.com",
+    "first_name": "Victor",
+    "last_name": "Gonzalez",
+    "phone": "5598765432",
+    "employee_number": "EMP013",
+    "bank_account_number": "BANCO013",
+    "address_line_one": "Blvd de las Palmas 789",
+    "address_line_two": "Edificio Diamante, Piso 7",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39870",
+    "country": "México",
+    "rfc": "GONV920307HPL",
+    "salary": 74000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2024-03-20T11:00:00Z",
+      "loan": 25000,
+      "installation_status": "installed",
+      "installation_date": "2024-03-21T14:30:00Z"
+    }
   }
+
 ]
 
-def find_or_initialize_and_update_user(user_params, file)
-  # Extract the email from the user params
-  email = user_params.delete(:email)
-  roles = user_params.delete(:roles)
-  credit_params = user_params.delete(:credit)
+def find_or_initialize_and_update_user_credit(user, credit_params)  
+  if user.credits.empty?
+    company = Company.find_by(domain: user.email.split('@').last)
+    term_offering = company.term_offerings.sample
+    puts "Assigning credit #{user.email} to term offering #{term_offering.term.duration} #{term_offering.term.duration_type} for company #{company.name}"
+    credit = Credit.new(user_id: user.id, term_offering_id: term_offering.id)
+    credit.assign_attributes(credit_params)
+    return credit
+  else
+    credit = user.credits.first
+    credit.assign_attributes(credit_params)
 
-  # Find an existing user by email or initialize a new one with the provided email
-  user = User.find_or_initialize_by(email: email)
+    return credit
+  end
+end
 
-  # Assign the rest of the user_params to the user, whether it's a new or found record
-  user.assign_attributes(user_params)
+def attatch_new_files_to_credit(credit, file)
+  # Assign documents to the credit
+  # leave out "new" and "denied" statuses
+  if (credit.status == 'pending' || credit.status == 'invalid-documentation' || credit.status == 'authorized' || credit.status == 'dispersed')
+    file.rewind
+    credit.contract.attach(io: file, filename: 'contract.png', content_type: 'image/png') if credit.contract.blank?
+    puts "Assigned contract to credit #{credit.id}"
+    file.rewind
+    credit.authorization.attach(io: file, filename: 'authorization.png', content_type: 'image/png') if credit.authorization.blank?
+    puts "Assigned authorization to credit #{credit.id}"
+    file.rewind
+    credit.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png') if credit.payroll_receipt.blank?
+    puts "Assigned payroll_receipt to credit #{credit.id}"
+  end
+  credit
+end
 
+def attatch_prev_files_to_credit(credit, credit_with_file)
+  # Assign documents to the credit
+  # leave out "new" and "denied" statuses
+  if (credit.status == 'pending' || credit.status == 'invalid-documentation' || credit.status == 'authorized' || credit.status == 'dispersed')
+    credit.contract.attach(credit_with_file.contract.blob) if credit.contract.blank?
+    puts "Assigned contract to credit #{credit.id}"
+    credit.authorization.attach(credit_with_file.authorization.blob) if credit.authorization.blank?
+    puts "Assigned authorization to credit #{credit.id}"
+    credit.payroll_receipt.attach(credit_with_file.payroll_receipt.blob) if credit.payroll_receipt.blank?
+    puts "Assigned payroll_receipt to credit #{credit.id}"
+  end
+  credit
+end
+
+def attach_new_files_to_user(user, file)
   # Assign documents to the credit
   # leave out "new" and "denied" statuses
   if (user.status == 'pending' || user.status == 'pre-authorization' || user.status == 'pre-authorized' || user.status == 'invalid-documentation')
@@ -525,15 +786,41 @@ def find_or_initialize_and_update_user(user_params, file)
     user.proof_of_address.attach(io: file, filename: 'proof_of_address.png', content_type: 'image/png') if user.proof_of_address.blank?
     puts "Assigned proof_of_address to user #{user.email}"
   end
+  user
+end
 
-  action = user.new_record? ? 'Creating' : user.changed? ? 'Updating' : nil
-
-  if action.present?
-    puts "#{action} user #{user.email}"
-    user.assign_attributes password: '123456'
-    user.save
+def attach_prev_files_to_user(user, user_with_file)
+  # Assign documents to the credit
+  # leave out "new" and "denied" statuses
+  if (user.status == 'pending' || user.status == 'pre-authorization' || user.status == 'pre-authorized' || user.status == 'invalid-documentation')
+    
+    user.identity_document.attach(user_with_file.identity_document.blob) if user.identity_document.blank?
+    puts "Assigned identity_document to user #{user.email}"
+    
+    user.bank_statement.attach(user_with_file.bank_statement.blob) if user.bank_statement.blank?
+    puts "Assigned bank_statement to user #{user.email}"
+    
+    user.payroll_receipt.attach(user_with_file.payroll_receipt.blob) if user.payroll_receipt.blank?
+    puts "Assigned payroll_receipt to user #{user.email}"
+    
+    user.proof_of_address.attach(user_with_file.proof_of_address.blob) if user.proof_of_address.blank?
+    puts "Assigned proof_of_address to user #{user.email}"
   end
+  user
+end
 
+# Create or update the users with basic information like name, email, phone, and status
+def find_or_initialize_and_update_user(user_params)
+  # Find an existing user by email or initialize a new one with the provided email
+  user = User.find_or_initialize_by(email: user_params[:email])
+
+  # Assign the rest of the user_params to the user, whether it's a new or found record
+  user.assign_attributes(user_params.without(:email, :roles, :credit))
+  user
+end
+
+def find_or_initialize_and_update_user_roles(user, user_params)
+  roles = user_params[:roles]
   if roles.present?
     roles.each do |role|
       return if user.has_role? role
@@ -542,42 +829,88 @@ def find_or_initialize_and_update_user(user_params, file)
       user.add_role role
     end
   end
+  user
+end
+
+def save_user(user)
+  action = user.new_record? ? 'Creating' : user.changed? ? 'Updating' : nil
+
+  if action.present?
+    puts "#{action} user #{user.email}"
+    user.assign_attributes password: '123456'
+    user.save
+  end
 
   # Validate the user record. This will run the validations in the user model
-  puts user.errors.full_messages if user.invalid?
-
-  if credit_params.present?
-    credit_term_id = credit_params.delete(:term_id)
-    company = Company.find_by(domain: user.email.split('@').last)
-    term_offering = company.term_offerings.sample
-    puts "Assigning credit #{user.email} to term offering #{term_offering.term.duration} #{term_offering.term.duration_type} for company #{company.name}"
-    credit = user.credits.find_or_initialize_by(term_offering_id: term_offering.id)
-    credit.assign_attributes(credit_params)
-
-    # Assign documents to the credit
-    # leave out "new" and "denied" statuses
-    if (credit.status == 'pending' || credit.status == 'invalid-documentation' || credit.status == 'authorized' || credit.status == 'dispersed')
-      file.rewind
-      credit.contract.attach(io: file, filename: 'contract.png', content_type: 'image/png') if credit.contract.blank?
-      file.rewind
-      credit.authorization.attach(io: file, filename: 'authorization.png', content_type: 'image/png') if credit.authorization.blank?
-      file.rewind
-      credit.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png') if credit.payroll_receipt.blank?
-    end
-
-    action = credit.new_record? ? 'Creating' : credit.changed? ? 'Updating' : nil
-    return if action.nil?
-    puts "- #{action} credit"
-    credit.save
-    puts credit.errors.full_messages if credit.invalid?
+  if user.invalid?
+    puts user.errors.full_messages
+    throw :abort
   end
+  user
+end
+
+def save_credit(credit)
+  action = credit.new_record? ? 'Creating' : credit.changed? ? 'Updating' : nil
+
+  if action.present?
+    puts "#{action} credit #{credit.id}"
+    credit.save
+  end
+
+  # Validate the credit record. This will run the validations in the credit model
+  if credit.invalid?
+    puts credit.errors.full_messages
+    throw :abort
+  end
+  credit
 end
 
 # Create or update the users
+users.each do |user_params|
+  user = find_or_initialize_and_update_user user_params
+  save_user user
+end
+staff_users.each do |user_params|
+  user = find_or_initialize_and_update_user user_params
+  find_or_initialize_and_update_user_roles(user, user_params)
+  save_user user
+end
+
 file_path = Rails.root.join('db', 'assets', '150.png')
 File.open(file_path, 'rb') do |file|
-  user_examples.each do |user|
-    find_or_initialize_and_update_user user, file
+  first_user = find_or_initialize_and_update_user first_user_with_documents
+  first_user = attach_new_files_to_user(first_user, file)
+  first_user = save_user first_user
+
+  users_with_documents.each do |user_params|
+    user = find_or_initialize_and_update_user user_params
+    user = attach_prev_files_to_user(user, first_user)
+    save_user user
+  end
+
+  users_with_documents_and_credit.each do |user_params|
+    user = find_or_initialize_and_update_user user_params
+    user = attach_prev_files_to_user(user, first_user)
+    user = save_user user
+    credit = find_or_initialize_and_update_user_credit(user, user_params[:credit])
+    save_credit credit
+  end
+
+  first_user_with_documents_and_credit = find_or_initialize_and_update_user first_user_with_documents_and_credit_docs
+  first_user_with_documents_and_credit = attach_prev_files_to_user(first_user_with_documents_and_credit, first_user)
+  first_user_with_documents_and_credit = save_user first_user_with_documents_and_credit
+  first_credit = find_or_initialize_and_update_user_credit(first_user_with_documents_and_credit, first_user_with_documents_and_credit_docs[:credit])
+  first_credit = attatch_new_files_to_credit(first_credit, file)
+  first_credit = save_credit first_credit
+
+  users_with_documents_and_credit_and_documents.each do |user_params|
+    user = find_or_initialize_and_update_user user_params
+    user = attach_prev_files_to_user(user, first_user)
+    user = save_user user
+
+    credit = find_or_initialize_and_update_user_credit(user, user_params[:credit])
+    credit = attatch_prev_files_to_credit(credit, first_credit)
+    save_credit credit
   end
 end
 
