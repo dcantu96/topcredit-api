@@ -11,7 +11,7 @@ class Api::CreditResource < JSONAPI::Resource
   has_one :borrower, foreign_key: 'user_id', class_name: 'User'
   has_one :term_offering
 
-  filter :status, :company, :installation_status
+  filters :status, :installation_status
 
   def fetchable_fields
     super - [:contract, :authorization, :payroll_receipt]
