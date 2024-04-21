@@ -478,6 +478,8 @@ users_with_documents_and_credit_and_documents = [
       "contract_status": "approved",
       "authorization_status": "approved",
       "payroll_receipt_status": "approved",
+      "installation_date": nil,
+      "installation_status": nil,
       "loan": 20000
     }
   },
@@ -506,7 +508,9 @@ users_with_documents_and_credit_and_documents = [
       "contract_status": "approved",
       "authorization_status": "approved",
       "payroll_receipt_status": "approved",
-      "dispersed_at": Time.now,
+      "dispersed_at": "2024-01-19T15:00:00Z",
+      "installation_date": nil,
+      "installation_status": nil,
       "loan": 20000
     }
   },
@@ -536,6 +540,8 @@ users_with_documents_and_credit_and_documents = [
       "authorization_status": "approved",
       "payroll_receipt_status": "approved",
       "dispersed_at": "2024-04-20T15:00:00Z",
+      "installation_date": nil,
+      "installation_status": nil,
       "loan": 30000
     }
   },
@@ -564,12 +570,14 @@ users_with_documents_and_credit_and_documents = [
       "contract_status": "approved",
       "authorization_status": "approved",
       "payroll_receipt_status": "approved",
-      "dispersed_at": "2024-05-01T09:30:00Z",
+      "dispersed_at": "2024-02-01T09:30:00Z",
+      "installation_date": nil,
+      "installation_status": nil,
       "loan": 22000
     }
   },
   {
-    "email": "daniel.sanchez@heb.com",
+    "email": "daniel.sanchez@soriana.com",
     "first_name": "Daniel",
     "last_name": "Sanchez",
     "phone": "5546789123",
@@ -593,8 +601,103 @@ users_with_documents_and_credit_and_documents = [
       "contract_status": "approved",
       "authorization_status": "approved",
       "payroll_receipt_status": "approved",
-      "dispersed_at": "2024-05-15T14:45:00Z",
+      "dispersed_at": "2022-12-15T14:45:00Z",
+      "installation_status": "installed",
+      "installation_date": "2022-12-30T10:00:00Z",
       "loan": 28000
+    }
+  },
+  {
+    "email": "elena.ramirez@soriana.com",
+    "first_name": "Elena",
+    "last_name": "Ramirez",
+    "phone": "5523344556",
+    "employee_number": "EMP611",
+    "bank_account_number": "BANCO611",
+    "address_line_one": "Calle de la Industria 907",
+    "address_line_two": "Edificio Luna, Apt 11",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39750",
+    "country": "México",
+    "rfc": "RAME760823HDF",
+    "salary": 76000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2022-11-10T16:30:00Z",
+      "installation_status": "installed",
+      "installation_date": "2022-12-05T09:00:00Z",
+      "loan": 30000
+    }
+  },
+  {
+    "email": "mario.fuentes@soriana.com",
+    "first_name": "Mario",
+    "last_name": "Fuentes",
+    "phone": "5587643210",
+    "employee_number": "EMP634",
+    "bank_account_number": "BANCO634",
+    "address_line_one": "Paseo del Marqués 222",
+    "address_line_two": "Residencia Coral, Casa 5",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39650",
+    "country": "México",
+    "rfc": "FNTM840510HBC",
+    "salary": 78000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2022-10-25T13:00:00Z",
+      "installation_status": "installed",
+      "installation_date": "2022-11-15T11:00:00Z",
+      "loan": 32000
+    }
+  },
+  {
+    "email": "jimena.hernandez@soriana.com",
+    "first_name": "Jimena",
+    "last_name": "Hernandez",
+    "phone": "5591238765",
+    "employee_number": "EMP745",
+    "bank_account_number": "BANCO745",
+    "address_line_one": "Avenida de los Insurgentes 334",
+    "address_line_two": "Torre del Parque, Piso 8",
+    "city": "Acapulco",
+    "state": "GRO",
+    "postal_code": "39780",
+    "country": "México",
+    "rfc": "HERL881017MPL",
+    "salary": 74500,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "status": "dispersed",
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "dispersed_at": "2024-04-21T10:00:00Z",
+      "installation_status": nil,
+      "installation_date": nil,
+      "loan": 27500
     }
   },
   {
@@ -622,7 +725,9 @@ users_with_documents_and_credit_and_documents = [
       "contract_status": "approved",
       "authorization_status": "approved",
       "payroll_receipt_status": "approved",
-      "dispersed_at": "2024-02-10T16:30:00Z",
+      "dispersed_at": "2023-06-10T16:30:00Z",
+      "installation_status": "installed",
+      "installation_date": "2023-06-29T10:00:00Z",
       "loan": 24000
     }
   },
@@ -653,7 +758,7 @@ users_with_documents_and_credit_and_documents = [
       "payroll_receipt_status": "approved",
       "dispersed_at": "2024-02-20T10:00:00Z",
       "installation_status": "installed",
-      "installation_date": "2024-02-25T10:00:00Z",
+      "installation_date": "2024-03-01T10:00:00Z",
       "loan": 27000
     }
   },
@@ -685,7 +790,7 @@ users_with_documents_and_credit_and_documents = [
       "dispersed_at": "2024-04-01T12:00:00Z",
       "loan": 26000,
       "installation_status": "installed",
-      "installation_date": "2024-04-02T15:00:00Z"
+      "installation_date": "2024-04-15T15:00:00Z"
     }
   },
   {
@@ -716,7 +821,7 @@ users_with_documents_and_credit_and_documents = [
       "dispersed_at": "2024-03-20T11:00:00Z",
       "loan": 25000,
       "installation_status": "installed",
-      "installation_date": "2024-03-21T14:30:00Z"
+      "installation_date": "2024-03-30T14:30:00Z"
     }
   }
 ]
@@ -741,15 +846,21 @@ def attatch_new_files_to_credit(credit, file)
   # Assign documents to the credit
   # leave out "new" and "denied" statuses
   if (credit.status == 'pending' || credit.status == 'invalid-documentation' || credit.status == 'authorized' || credit.status == 'dispersed')
-    file.rewind
-    credit.contract.attach(io: file, filename: 'contract.png', content_type: 'image/png') if credit.contract.blank?
-    puts "Assigned contract to credit #{credit.id}"
-    file.rewind
-    credit.authorization.attach(io: file, filename: 'authorization.png', content_type: 'image/png') if credit.authorization.blank?
-    puts "Assigned authorization to credit #{credit.id}"
-    file.rewind
-    credit.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png') if credit.payroll_receipt.blank?
-    puts "Assigned payroll_receipt to credit #{credit.id}"
+    if credit.contract.blank?
+      file.rewind
+      credit.contract.attach(io: file, filename: 'contract.png', content_type: 'image/png')
+      puts "Assigned remote contract doc to credit #{credit.id}"
+    end
+    if credit.authorization.blank?
+      file.rewind
+      credit.authorization.attach(io: file, filename: 'authorization.png', content_type: 'image/png') if credit.authorization.blank?
+      puts "Assigned remote authorization doc to credit #{credit.id}"
+    end
+    if credit.payroll_receipt.blank?
+      file.rewind
+      credit.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png') if credit.payroll_receipt.blank?
+      puts "Assigned remote payroll_receipt doc to credit #{credit.id}"
+    end
   end
   credit
 end
@@ -758,12 +869,18 @@ def attatch_prev_files_to_credit(credit, credit_with_file)
   # Assign documents to the credit
   # leave out "new" and "denied" statuses
   if (credit.status == 'pending' || credit.status == 'invalid-documentation' || credit.status == 'authorized' || credit.status == 'dispersed')
-    credit.contract.attach(credit_with_file.contract.blob) if credit.contract.blank?
-    puts "Assigned contract to credit #{credit.id}"
-    credit.authorization.attach(credit_with_file.authorization.blob) if credit.authorization.blank?
-    puts "Assigned authorization to credit #{credit.id}"
-    credit.payroll_receipt.attach(credit_with_file.payroll_receipt.blob) if credit.payroll_receipt.blank?
-    puts "Assigned payroll_receipt to credit #{credit.id}"
+    if credit.contract.blank?
+      credit.contract.attach(credit_with_file.contract.blob)
+      puts "Assigned contract documents from blob #{credit_with_file.contract.blob.id}"
+    end
+    if credit.authorization.blank?
+      credit.authorization.attach(credit_with_file.authorization.blob)
+      puts "Assigned authorization documents from blob #{credit_with_file.authorization.blob.id}"
+    end
+    if credit.payroll_receipt.blank?
+      credit.payroll_receipt.attach(credit_with_file.payroll_receipt.blob)
+      puts "Assigned payroll_receipt documents from blob #{credit_with_file.payroll_receipt.blob.id}"
+    end
   end
   credit
 end
@@ -772,18 +889,28 @@ def attach_new_files_to_user(user, file)
   # Assign documents to the credit
   # leave out "new" and "denied" statuses
   if (user.status == 'pending' || user.status == 'pre-authorization' || user.status == 'pre-authorized' || user.status == 'invalid-documentation')
-    file.rewind
-    user.identity_document.attach(io: file, filename: 'identity_document.png', content_type: 'image/png') if user.identity_document.blank?
-    puts "Assigned identity_document to user #{user.email}"
-    file.rewind
-    user.bank_statement.attach(io: file, filename: 'bank_statement.png', content_type: 'image/png') if user.bank_statement.blank?
-    puts "Assigned bank_statement to user #{user.email}"
-    file.rewind
-    user.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png') if user.payroll_receipt.blank?
-    puts "Assigned payroll_receipt to user #{user.email}"
-    file.rewind
-    user.proof_of_address.attach(io: file, filename: 'proof_of_address.png', content_type: 'image/png') if user.proof_of_address.blank?
-    puts "Assigned proof_of_address to user #{user.email}"
+    if user.identity_document.blank?
+      file.rewind
+      user.identity_document.attach(io: file, filename: 'identity_document.png', content_type: 'image/png')
+      puts "Assigned identity_document remote doc to user #{user.email}"
+    end
+    if user.bank_statement.blank?
+      file.rewind
+      user.bank_statement.attach(io: file, filename: 'bank_statement.png', content_type: 'image/png')
+      puts "Assigned bank_statement remote doc to user #{user.email}"
+    end
+
+    if user.payroll_receipt.blank?
+      file.rewind
+      user.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png')
+      puts "Assigned payroll_receipt remote doc to user #{user.email}"
+    end
+
+    if user.proof_of_address.blank?
+      file.rewind
+      user.proof_of_address.attach(io: file, filename: 'proof_of_address.png', content_type: 'image/png')
+      puts "Assigned proof_of_address remote doc to user #{user.email}"
+    end
   end
   user
 end
@@ -792,18 +919,25 @@ def attach_prev_files_to_user(user, user_with_file)
   # Assign documents to the credit
   # leave out "new" and "denied" statuses
   if (user.status == 'pending' || user.status == 'pre-authorization' || user.status == 'pre-authorized' || user.status == 'invalid-documentation')
+    if user.identity_document.blank?
+      user.identity_document.attach(user_with_file.identity_document.blob)
+      puts "Assigned identity_document to user #{user.email} from blob #{user_with_file.identity_document.blob.id}"
+    end
     
-    user.identity_document.attach(user_with_file.identity_document.blob) if user.identity_document.blank?
-    puts "Assigned identity_document to user #{user.email}"
+    if user.bank_statement.blank?
+      user.bank_statement.attach(user_with_file.bank_statement.blob)
+      puts "Assigned bank_statement to user #{user.email} from blob #{user_with_file.bank_statement.blob.id}"
+    end
     
-    user.bank_statement.attach(user_with_file.bank_statement.blob) if user.bank_statement.blank?
-    puts "Assigned bank_statement to user #{user.email}"
+    if user.payroll_receipt.blank?
+      user.payroll_receipt.attach(user_with_file.payroll_receipt.blob)
+      puts "Assigned payroll_receipt to user #{user.email} from blob #{user_with_file.payroll_receipt.blob.id}"
+    end
     
-    user.payroll_receipt.attach(user_with_file.payroll_receipt.blob) if user.payroll_receipt.blank?
-    puts "Assigned payroll_receipt to user #{user.email}"
-    
-    user.proof_of_address.attach(user_with_file.proof_of_address.blob) if user.proof_of_address.blank?
-    puts "Assigned proof_of_address to user #{user.email}"
+    if user.proof_of_address.blank?
+      user.proof_of_address.attach(user_with_file.proof_of_address.blob)
+      puts "Assigned proof_of_address to user #{user.email} from blob #{user_with_file.proof_of_address.blob.id}"
+    end
   end
   user
 end
@@ -941,8 +1075,6 @@ File.open(file_path, 'rb') do |file|
     # next: assign "mock" payments depending on the credit term duration and frequency
     next if credit.status != 'dispersed' || credit.installation_status != 'installed'
     next if credit.payments.present?
-    puts "Creating payments for credit #{credit.borrower.email}"
-    
 
     installation_date = credit.installation_date
     term_duration = credit.term_offering.term.duration
@@ -950,18 +1082,15 @@ File.open(file_path, 'rb') do |file|
     total_payments = calculate_total_payments_in_months(term_duration, term_duration_type)
     amortization_amount = calculate_amortization(credit.loan, total_payments, credit.term_offering.company.rate)
 
-    # determine the number of payments to create based on the installation date and the term duration and frequency
-    # 1. fetch the amount of days between the installation date and the current date
-    # 2. determine the number of payments to create based on the term duration and frequency
-    # 3. create the payments
-    days_since_installation = (Time.now.to_date - installation_date.to_date).to_i
-    payments_to_create = (days_since_installation / (term_duration_type == 'two-weeks' ? 14 : 30)).to_i
+    payments_to_create = Payments.calculate_payments_count(installation_date.to_date, term_duration_type, term_duration)
+    next if payments_to_create.zero?
+    puts "Creating #{payments_to_create} payments for credit #{credit.borrower.email}"
     payments_to_create.times do |i|
-      paid_at = term_duration_type == 'two-weeks' ? installation_date.advance(weeks: i) : installation_date.advance(months: i)
+      paid_at = Payments.get_next_payment_date(installation_date.to_date, term_duration_type, i)
       Payment.create(
         credit_id: credit.id,
         amount: amortization_amount,
-        paid_at: paid_at
+        paid_at: paid_at.in_time_zone.to_datetime
       )
     end
   end
