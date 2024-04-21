@@ -1,6 +1,7 @@
 class Credit < ApplicationRecord
   belongs_to :borrower, foreign_key: 'user_id', class_name: 'User', optional: false
   belongs_to :term_offering, optional: false
+  has_many :payments, dependent: :destroy
   has_one_attached :contract
   has_one_attached :authorization
   has_one_attached :payroll_receipt

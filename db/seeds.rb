@@ -719,7 +719,6 @@ users_with_documents_and_credit_and_documents = [
       "installation_date": "2024-03-21T14:30:00Z"
     }
   }
-
 ]
 
 def find_or_initialize_and_update_user_credit(user, credit_params)  
@@ -865,6 +864,34 @@ def save_credit(credit)
   credit
 end
 
+def calculate_total_payments_in_months(duration, duration_type)
+  case duration_type
+  when "years"
+    duration * 12
+  when "months"
+    duration
+  else
+    duration / 2
+  end
+end
+
+def calculate_amortization(loan_amount, total_payments, rate)
+  # Calculate the monthly interest rate
+  monthly_interest_rate = rate / 12.0
+
+  # Calculate the monthly payment using the formula for amortization
+  if monthly_interest_rate == 0
+    monthly_payment = loan_amount / total_payments.to_f
+  else
+    monthly_payment =
+      (monthly_interest_rate * loan_amount) /
+      (1 - (1 + monthly_interest_rate)**-total_payments)
+  end
+
+  # Return the monthly payment rounded to two decimal places
+  monthly_payment.round(2)
+end
+
 # Create or update the users
 users.each do |user_params|
   user = find_or_initialize_and_update_user user_params
@@ -910,7 +937,33 @@ File.open(file_path, 'rb') do |file|
 
     credit = find_or_initialize_and_update_user_credit(user, user_params[:credit])
     credit = attatch_prev_files_to_credit(credit, first_credit)
-    save_credit credit
+    credit = save_credit credit
+    # next: assign "mock" payments depending on the credit term duration and frequency
+    next if credit.status != 'dispersed' || credit.installation_status != 'installed'
+    next if credit.payments.present?
+    puts "Creating payments for credit #{credit.borrower.email}"
+    
+
+    installation_date = credit.installation_date
+    term_duration = credit.term_offering.term.duration
+    term_duration_type = credit.term_offering.term.duration_type
+    total_payments = calculate_total_payments_in_months(term_duration, term_duration_type)
+    amortization_amount = calculate_amortization(credit.loan, total_payments, credit.term_offering.company.rate)
+
+    # determine the number of payments to create based on the installation date and the term duration and frequency
+    # 1. fetch the amount of days between the installation date and the current date
+    # 2. determine the number of payments to create based on the term duration and frequency
+    # 3. create the payments
+    days_since_installation = (Time.now.to_date - installation_date.to_date).to_i
+    payments_to_create = (days_since_installation / (term_duration_type == 'two-weeks' ? 14 : 30)).to_i
+    payments_to_create.times do |i|
+      paid_at = term_duration_type == 'two-weeks' ? installation_date.advance(weeks: i) : installation_date.advance(months: i)
+      Payment.create(
+        credit_id: credit.id,
+        amount: amortization_amount,
+        paid_at: paid_at
+      )
+    end
   end
 end
 

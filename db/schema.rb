@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_04_20_161906) do
+ActiveRecord::Schema[7.1].define(version: 2024_04_20_224649) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,6 +115,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_20_161906) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
+  create_table "payments", force: :cascade do |t|
+    t.bigint "credit_id", null: false
+    t.float "amount", null: false
+    t.datetime "paid_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["credit_id"], name: "index_payments_on_credit_id"
+  end
+
   create_table "roles", force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -197,6 +206,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_04_20_161906) do
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "payments", "credits"
   add_foreign_key "term_offerings", "companies"
   add_foreign_key "term_offerings", "terms"
   add_foreign_key "users", "users", column: "handled_by_id"
