@@ -2,6 +2,7 @@ class Company < ApplicationRecord
   has_many :term_offerings
   has_many :terms, through: :term_offerings
   has_many :credits, through: :term_offerings
+  has_many :payments, through: :credits
 
   validates :borrowing_capacity, numericality: { greater_than: 0, less_than_or_equal_to: 1 }, allow_nil: true
   validates :domain, presence: true, format: { with: /\A[a-zA-Z0-9_-]+\.[a-zA-Z]{2,}\z/ }

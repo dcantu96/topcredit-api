@@ -3,6 +3,7 @@ class Api::CompanyResource < JSONAPI::Resource
   has_many :term_offerings
   has_many :terms, through: :term_offerings
   has_many :credits, through: :term_offerings
+  has_many :payments, through: :credits
 
   filter :domain
 end
