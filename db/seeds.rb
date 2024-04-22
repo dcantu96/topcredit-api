@@ -450,6 +450,8 @@ users_with_documents_and_credit_and_documents = [
       "contract_status": "approved",
       "authorization_status": "approved",
       "payroll_receipt_status": "approved",
+      "installation_date": nil,
+      "installation_status": nil,
       "loan": 20000
     }
   },
@@ -481,6 +483,37 @@ users_with_documents_and_credit_and_documents = [
       "installation_date": nil,
       "installation_status": nil,
       "loan": 20000
+    }
+  },
+  {
+    "email": "roberto.lopez@soriana.com",
+    "first_name": "Roberto",
+    "last_name": "López",
+    "phone": "5587654321",
+    "employee_number": "EMP203",
+    "bank_account_number": "CUENTA203",
+    "address_line_one": "Av. Insurgentes Sur 1457",
+    "address_line_two": "Oficina 303, Edificio Plaza",
+    "city": "Ciudad de México",
+    "state": "MEX",
+    "postal_code": "03920",
+    "country": "México",
+    "rfc": "LOPR840516HDFRRL04",
+    "salary": 8000,
+    "status": "pre-authorized",
+    "identity_document_status": "approved",
+    "bank_statement_status": "approved",
+    "payroll_receipt_status": "approved",
+    "proof_of_address_status": "approved",
+    "credit": {
+      "contract_status": "approved",
+      "authorization_status": "approved",
+      "payroll_receipt_status": "approved",
+      "loan": 5000,
+      "status": "dispersed",
+      "installation_status": "installed",
+      "dispersed_at": "2024-04-10T10:00:00Z",
+      "installation_date": "2024-04-15T10:00:00Z"
     }
   },
   {
@@ -1095,8 +1128,6 @@ File.open(file_path, 'rb') do |file|
     end
   end
 end
-
-
 
 puts "Seeds finished"
 
