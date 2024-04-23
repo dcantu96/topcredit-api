@@ -1123,7 +1123,8 @@ File.open(file_path, 'rb') do |file|
       Payment.create(
         credit_id: credit.id,
         amount: amortization_amount,
-        paid_at: paid_at.in_time_zone.to_datetime
+        paid_at: paid_at.in_time_zone.to_datetime,
+        number: i + 1
       )
     end
   end
