@@ -5,12 +5,14 @@ class Credit < ApplicationRecord
   has_one_attached :contract
   has_one_attached :authorization
   has_one_attached :payroll_receipt
+  has_one_attached :dispersion_receipt
 
   validates_inclusion_of :status, in: %w( new pending invalid-documentation authorized denied dispersed finished )
   validates_inclusion_of :contract_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :authorization_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :installation_status, in: %w( installed ), allow_nil: true
+  validate :dispersed_credits_must_have_dispersion_receipt
   validate :dispersed_credits_must_have_dispersed_at
   validate :dispersed_and_authorized_credit_must_have_approved_documents
   validate :borrower_must_be_pre_authorized
@@ -82,6 +84,12 @@ class Credit < ApplicationRecord
   def invalid_documentation_status
     if status == 'invalid-documentation' && (contract_status != 'rejected' && authorization_status != 'rejected' && payroll_receipt_status != 'rejected')
       errors.add(:status, :invalid_status_change)
+    end
+  end
+
+  def dispersed_credits_must_have_dispersion_receipt
+    if status == 'dispersed' && !dispersion_receipt.attached?
+      errors.add(:dispersion_receipt, :blank)
     end
   end
 

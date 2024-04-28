@@ -1,5 +1,5 @@
 class Api::CreditResource < JSONAPI::Resource
-  attributes :status, :loan, :contract, :contract_url, :contract_filename, 
+  attributes :status, :loan, :dispersion_receipt, :contract, :contract_url, :contract_filename, 
              :contract_size, :contract_content_type, :contract_uploaded_at,
              :authorization, :authorization_url, :authorization_filename,
              :authorization_size, :authorization_content_type, :authorization_uploaded_at,
@@ -15,7 +15,7 @@ class Api::CreditResource < JSONAPI::Resource
   filters :status, :installation_status
 
   def fetchable_fields
-    super - [:contract, :authorization, :payroll_receipt]
+    super - [:contract, :authorization, :payroll_receipt, :dispersion_receipt]
   end
 
   filter :company, apply: ->(records, value, _options) {    

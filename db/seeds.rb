@@ -894,6 +894,11 @@ def attatch_new_files_to_credit(credit, file)
       credit.payroll_receipt.attach(io: file, filename: 'payroll_receipt.png', content_type: 'image/png') if credit.payroll_receipt.blank?
       puts "Assigned remote payroll_receipt doc to credit #{credit.id}"
     end
+    if credit.dispersion_receipt.blank?
+      file.rewind
+      credit.dispersion_receipt.attach(io: file, filename: 'dispersion_receipt.png', content_type: 'image/png') if credit.dispersion_receipt.blank?
+      puts "Assigned remote dispersion_receipt doc to credit #{credit.id}"
+    end
   end
   credit
 end
@@ -913,6 +918,10 @@ def attatch_prev_files_to_credit(credit, credit_with_file)
     if credit.payroll_receipt.blank?
       credit.payroll_receipt.attach(credit_with_file.payroll_receipt.blob)
       puts "Assigned payroll_receipt documents from blob #{credit_with_file.payroll_receipt.blob.id}"
+    end
+    if credit.dispersion_receipt.blank?
+      credit.dispersion_receipt.attach(credit_with_file.dispersion_receipt.blob)
+      puts "Assigned dispersion_receipt documents from blob #{credit_with_file.dispersion_receipt.blob.id}"
     end
   end
   credit
