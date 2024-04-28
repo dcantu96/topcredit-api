@@ -6,7 +6,7 @@ class Credit < ApplicationRecord
   has_one_attached :authorization
   has_one_attached :payroll_receipt
 
-  validates_inclusion_of :status, in: %w( new pending invalid-documentation authorized denied dispersed )
+  validates_inclusion_of :status, in: %w( new pending invalid-documentation authorized denied dispersed finished )
   validates_inclusion_of :contract_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :authorization_status, in: %w( pending approved rejected ), allow_nil: true
   validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
