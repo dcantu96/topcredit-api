@@ -56,7 +56,6 @@ Rails.application.configure do
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
-
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 
@@ -70,7 +69,7 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   # Mailer configuration
-  config.action_mailer.default_url_options = { host: 'localhost', port: 4000 }
+  config.action_mailer.default_url_options = { host: "localhost", port: 4000 }
 end
 
 module TopcreditApi
@@ -80,13 +79,12 @@ module TopcreditApi
     # CORS configuration
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins 'http://localhost:3000'  # Specify the origin of your front-end app
-        resource '*',  # Specify which resources can be accessed
-          headers: :any,  # Allow all headers
-          methods: [:get, :post, :put, :patch, :delete, :options, :head],  # Allow all HTTP methods
-          credentials: true  # If your API involves credentials like cookies or auth tokens
+        origins "http://localhost:3000" # Specify the origin of your front-end app
+        resource "*", # Specify which resources can be accessed
+                 headers: :any, # Allow all headers
+                 methods: %i[get post put patch delete options head], # Allow all HTTP methods
+                 credentials: true # If your API involves credentials like cookies or auth tokens
       end
     end
   end
 end
-

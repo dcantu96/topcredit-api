@@ -12,17 +12,17 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 
 # Json API library for Rails Apps [https://jsonapi-resources.com]
-gem 'jsonapi-resources', '~> 0.10.0'
+gem "jsonapi-resources", "~> 0.10.0"
 
 # Authorization libraries for this App
-gem 'devise'
-gem 'doorkeeper'
+gem "devise"
+gem "doorkeeper"
 
 # Role management for this App
-gem 'rolify'
+gem "rolify"
 
 # Storage tools
-gem 'aws-sdk-s3', require: false
+gem "aws-sdk-s3", require: false
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
@@ -37,33 +37,32 @@ gem 'aws-sdk-s3', require: false
 # gem "bcrypt", "~> 3.1.7"
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: %i[ windows jruby ]
+gem "tzinfo-data", platforms: %i[windows jruby]
 
 # Reduces boot times through caching; required in config/boot.rb
-gem 'bootsnap', require: false
+gem "bootsnap", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
-gem 'rack-cors'
-gem 'sendgrid-ruby'
+gem "rack-cors"
+gem "sendgrid-ruby"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem 'rspec-rails', '~> 6.1.0'
-  gem 'debug', platforms: %i[ mri windows ]
-  gem 'pry'
-  gem 'letter_opener'
-  gem 'dotenv-rails'
+  gem "rspec-rails", "~> 6.1.0"
+  gem "debug", platforms: %i[mri windows]
+  gem "pry"
+  gem "letter_opener"
+  gem "dotenv-rails"
 end
 
 group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
-  gem 'prettier_print'
-  gem 'syntax_tree'
-  gem 'syntax_tree-haml'
-  gem 'syntax_tree-rbs'
+  gem "prettier_print"
+  gem "syntax_tree"
+  gem "syntax_tree-haml"
+  gem "syntax_tree-rbs"
 end
-

@@ -1,0 +1,2 @@
+schema.rb
+db/migrate/*.rb

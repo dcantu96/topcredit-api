@@ -1,5 +1,8 @@
 class Credit < ApplicationRecord
-  belongs_to :borrower, foreign_key: 'user_id', class_name: 'User', optional: false
+  belongs_to :borrower,
+             foreign_key: "user_id",
+             class_name: "User",
+             optional: false
   belongs_to :term_offering, optional: false
   has_many :payments, dependent: :destroy
   has_one_attached :contract
@@ -7,17 +10,34 @@ class Credit < ApplicationRecord
   has_one_attached :payroll_receipt
   has_one_attached :dispersion_receipt
 
-  validates_inclusion_of :status, in: %w( new pending invalid-documentation authorized denied dispersed finished )
-  validates_inclusion_of :contract_status, in: %w( pending approved rejected ), allow_nil: true
-  validates_inclusion_of :authorization_status, in: %w( pending approved rejected ), allow_nil: true
-  validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
-  validates_inclusion_of :installation_status, in: %w( installed ), allow_nil: true
+  validates_inclusion_of :status,
+                         in: %w[
+                           new
+                           pending
+                           invalid-documentation
+                           authorized
+                           denied
+                           dispersed
+                           finished
+                         ]
+  validates_inclusion_of :contract_status,
+                         in: %w[pending approved rejected],
+                         allow_nil: true
+  validates_inclusion_of :authorization_status,
+                         in: %w[pending approved rejected],
+                         allow_nil: true
+  validates_inclusion_of :payroll_receipt_status,
+                         in: %w[pending approved rejected],
+                         allow_nil: true
+  validates_inclusion_of :installation_status,
+                         in: %w[installed],
+                         allow_nil: true
   validate :dispersed_credits_must_have_dispersion_receipt
   validate :dispersed_credits_must_have_dispersed_at
   validate :dispersed_and_authorized_credit_must_have_approved_documents
   validate :borrower_must_be_pre_authorized
 
-  scope :dispersed, -> { where(status: 'dispersed') }
+  scope :dispersed, -> { where(status: "dispersed") }
 
   def contract_url
     contract.blob.url if contract.attached?
@@ -82,31 +102,43 @@ class Credit < ApplicationRecord
   private
 
   def invalid_documentation_status
-    if status == 'invalid-documentation' && (contract_status != 'rejected' && authorization_status != 'rejected' && payroll_receipt_status != 'rejected')
+    if status == "invalid-documentation" &&
+         (
+           contract_status != "rejected" &&
+             authorization_status != "rejected" &&
+             payroll_receipt_status != "rejected"
+         )
       errors.add(:status, :invalid_status_change)
     end
   end
 
   def dispersed_credits_must_have_dispersion_receipt
-    if status == 'dispersed' && !dispersion_receipt.attached?
+    if status == "dispersed" && !dispersion_receipt.attached?
       errors.add(:dispersion_receipt, :blank)
     end
   end
 
   def dispersed_credits_must_have_dispersed_at
-    if status == 'dispersed' && dispersed_at.nil?
+    if status == "dispersed" && dispersed_at.nil?
       errors.add(:dispersed_at, :blank)
     end
   end
 
   def dispersed_and_authorized_credit_must_have_approved_documents
-    if ((status == 'dispersed' || status == 'authorized') && (contract_status != 'approved' || authorization_status != 'approved' || payroll_receipt_status != 'approved'))
+    if (
+         (status == "dispersed" || status == "authorized") &&
+           (
+             contract_status != "approved" ||
+               authorization_status != "approved" ||
+               payroll_receipt_status != "approved"
+           )
+       )
       errors.add(:status, :invalid_status_change)
     end
   end
 
   def borrower_must_be_pre_authorized
-    if borrower.status != 'pre-authorized'
+    if borrower.status != "pre-authorized"
       errors.add(:status, :borrower_must_be_pre_authorized)
     end
   end

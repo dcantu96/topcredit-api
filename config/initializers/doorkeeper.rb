@@ -12,18 +12,18 @@ Doorkeeper.configure do
 
   resource_owner_from_credentials do |routes|
     user = User.find_for_database_authentication(email: params[:email])
-    if user&.valid_for_authentication? { user.valid_password?(params[:password]) } && user&.active_for_authentication?
-      request.env['warden'].set_user(user, scope: :user, store: false)
+    if user&.valid_for_authentication? {
+         user.valid_password?(params[:password])
+       } && user&.active_for_authentication?
+      request.env["warden"].set_user(user, scope: :user, store: false)
       user
     end
   end
 
   allow_blank_redirect_uri true
 
-  skip_authorization do
-    true
-  end
-  
+  skip_authorization { true }
+
   api_only
 
   allow_blank_redirect_uri true

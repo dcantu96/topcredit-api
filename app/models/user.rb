@@ -1,37 +1,90 @@
 class User < ApplicationRecord
-  rolify  
+  rolify
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :confirmable
-  
+  devise :database_authenticatable,
+         :registerable,
+         :recoverable,
+         :rememberable,
+         :validatable,
+         :confirmable
+
   has_many :access_grants,
-         class_name: 'Doorkeeper::AccessGrant',
-         foreign_key: :resource_owner_id,
-         dependent: :delete_all # or :destroy if you need callbacks
+           class_name: "Doorkeeper::AccessGrant",
+           foreign_key: :resource_owner_id,
+           dependent: :delete_all # or :destroy if you need callbacks
 
   has_many :access_tokens,
-         class_name: 'Doorkeeper::AccessToken',
-         foreign_key: :resource_owner_id,
-         dependent: :delete_all # or :destroy if you need callbacks
-  
+           class_name: "Doorkeeper::AccessToken",
+           foreign_key: :resource_owner_id,
+           dependent: :delete_all # or :destroy if you need callbacks
+
   has_many :credits, dependent: :destroy
   has_one_attached :identity_document
   has_one_attached :bank_statement
   has_one_attached :payroll_receipt
   has_one_attached :proof_of_address
-  belongs_to :handled_by, class_name: 'User', optional: true
-  
-  
+  belongs_to :handled_by, class_name: "User", optional: true
+
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :phone, presence: true
-  validates_inclusion_of :status, in: %w( new pending pre-authorization pre-authorized invalid-documentation denied )
-  validates_inclusion_of :state, in: %w( AGU BCN BCS CAM CHP CHH COA COL DUR GUA GRO HID JAL MEX MIC MOR NAY NLE OAX PUE QUE ROO SLP SIN SON TAB TAM TLA VER YUC ZAC ), allow_nil: true
-  validates_inclusion_of :identity_document_status, in: %w( pending approved rejected ), allow_nil: true
-  validates_inclusion_of :bank_statement_status, in: %w( pending approved rejected ), allow_nil: true
-  validates_inclusion_of :payroll_receipt_status, in: %w( pending approved rejected ), allow_nil: true
-  validates_inclusion_of :proof_of_address_status, in: %w( pending approved rejected ), allow_nil: true
+  validates_inclusion_of :status,
+                         in: %w[
+                           new
+                           pending
+                           pre-authorization
+                           pre-authorized
+                           invalid-documentation
+                           denied
+                         ]
+  validates_inclusion_of :state,
+                         in: %w[
+                           AGU
+                           BCN
+                           BCS
+                           CAM
+                           CHP
+                           CHH
+                           COA
+                           COL
+                           DUR
+                           GUA
+                           GRO
+                           HID
+                           JAL
+                           MEX
+                           MIC
+                           MOR
+                           NAY
+                           NLE
+                           OAX
+                           PUE
+                           QUE
+                           ROO
+                           SLP
+                           SIN
+                           SON
+                           TAB
+                           TAM
+                           TLA
+                           VER
+                           YUC
+                           ZAC
+                         ],
+                         allow_nil: true
+  validates_inclusion_of :identity_document_status,
+                         in: %w[pending approved rejected],
+                         allow_nil: true
+  validates_inclusion_of :bank_statement_status,
+                         in: %w[pending approved rejected],
+                         allow_nil: true
+  validates_inclusion_of :payroll_receipt_status,
+                         in: %w[pending approved rejected],
+                         allow_nil: true
+  validates_inclusion_of :proof_of_address_status,
+                         in: %w[pending approved rejected],
+                         allow_nil: true
   validate :email_of_company_domain
   validate :invalid_documentation_status
   validate :pre_authorization_status_must_have_approved_documents
@@ -119,34 +172,42 @@ class User < ApplicationRecord
   def proof_of_address_uploaded_at
     proof_of_address.blob.created_at if proof_of_address.attached?
   end
-  
+
   private
 
   def email_of_company_domain
-    if Company.find_by(domain: email.split('@').last).nil?
+    if Company.find_by(domain: email.split("@").last).nil?
       errors.add(:email, :invalid_domain)
     end
   end
 
   def invalid_documentation_status
-    if status == 'invalid-documentation' && (identity_document_status != 'rejected' && bank_statement_status != 'rejected' && payroll_receipt_status != 'rejected' && proof_of_address_status != 'rejected')
+    if status == "invalid-documentation" &&
+         (
+           identity_document_status != "rejected" &&
+             bank_statement_status != "rejected" &&
+             payroll_receipt_status != "rejected" &&
+             proof_of_address_status != "rejected"
+         )
       errors.add(:status, :invalid_status_change)
     end
   end
 
   def pre_authorization_status_must_have_approved_documents
-    if (status == 'pre-authorization' && 
-      (identity_document_status != 'approved' || 
-        identity_document == nil ||
-        bank_statement_status != 'approved' ||
-        bank_statement == nil ||
-        payroll_receipt_status != 'approved' ||
-        payroll_receipt == nil ||
-        proof_of_address_status != 'approved' ||
-        proof_of_address == nil
+    if (
+         status == "pre-authorization" &&
+           (
+             identity_document_status != "approved" ||
+               identity_document == nil ||
+               bank_statement_status != "approved" || bank_statement == nil ||
+               payroll_receipt_status != "approved" || payroll_receipt == nil ||
+               proof_of_address_status != "approved" || proof_of_address == nil
+           )
+       )
+      errors.add(
+        :status,
+        :pre_authorization_status_must_have_approved_documents
       )
-    )
-      errors.add(:status, :pre_authorization_status_must_have_approved_documents)
     end
   end
 end

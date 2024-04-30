@@ -2,7 +2,7 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
   def show
     token = params[:confirmation_token]
     user = resource_class.confirm_by_token(token)
-    
+
     if user.active_for_authentication?
       redirect_to success_redirect_url
     else
