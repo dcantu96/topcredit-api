@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     jsonapi_resources :terms
     jsonapi_resources :term_offerings
     jsonapi_resources :payments
+    post 'auth/resend-confirmation-instructions' => 'auth#resend_confirmation_instructions'
     get 'me', to: 'me#me'
   end
 
