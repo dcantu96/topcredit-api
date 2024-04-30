@@ -16,4 +16,5 @@ es:
             state:
               inclusion: "%{value} no es válido"
             email:
+              taken: "ya está en uso"
               invalid_domain: "%{value} es un dominio no permitido"
