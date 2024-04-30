@@ -4,9 +4,9 @@ class Users::ConfirmationsController < Devise::ConfirmationsController
     user = resource_class.confirm_by_token(token)
 
     if user.active_for_authentication?
-      redirect_to success_redirect_url
+      redirect_to success_redirect_url, allow_other_host: true
     else
-      redirect_to failure_redirect_url
+      redirect_to failure_redirect_url, allow_other_host: true
     end
   end
 
