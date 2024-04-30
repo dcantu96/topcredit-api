@@ -1,3 +1,10 @@
 {
-  "cSpell.words": ["activerecord"]
+  "cSpell.words": ["activerecord"],
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  }
 }
