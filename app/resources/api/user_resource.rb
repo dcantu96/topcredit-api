@@ -85,11 +85,14 @@ class Api::UserResource < JSONAPI::Resource
   private
 
   def notify_status_changed
+    handler =
+      "#{context[:current_user].first_name} #{context[:current_user].last_name}"
     if @model.saved_change_to_status?
-      UserStatusChangeNotifier.with(
-        record: @model,
-        handler: context[:current_user].first_name
-      ).deliver(User.with_any_role(:admin, :requests))
+      if @model.status != "pre-authorized" && @model.status != "new"
+        RequestsNotifier.with(record: @model, handler: handler).deliver(
+          User.with_any_role(:admin, :requests)
+        )
+      end
     end
   end
 end
