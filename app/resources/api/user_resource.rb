@@ -88,10 +88,19 @@ class Api::UserResource < JSONAPI::Resource
     handler =
       "#{context[:current_user].first_name} #{context[:current_user].last_name}"
     if @model.saved_change_to_status?
+      # Requests notifier
       if @model.status != "pre-authorized" && @model.status != "new"
         RequestsNotifier.with(record: @model, handler: handler).deliver(
           User.with_any_role(:admin, :requests)
         )
+      end
+      # PreAuthorizations notifier
+      if @model.status == "pre-authorization" || @model.status == "denied" ||
+           @model.status == "pre-authorized"
+        PreAuthorizationsNotifier.with(
+          record: @model,
+          handler: handler
+        ).deliver(User.with_any_role(:admin, :pre_authorizations))
       end
     end
   end
