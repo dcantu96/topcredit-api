@@ -179,6 +179,8 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.0-x86_64-linux)
       racc (~> 1.4)
+    noticed (2.2.2)
+      rails (>= 6.1.0)
     orm_adapter (0.5.0)
     pg (1.5.4)
     prettier_print (1.2.1)
@@ -302,6 +304,7 @@ DEPENDENCIES
   dotenv-rails
   jsonapi-resources (~> 0.10.0)
   letter_opener
+  noticed (~> 2.2)
   pg (~> 1.1)
   prettier_print
   pry

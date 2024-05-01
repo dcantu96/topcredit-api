@@ -1,4 +1,5 @@
 class Api::UserResource < JSONAPI::Resource
+  after_save :notify_status_changed
   attributes :first_name,
              :last_name,
              :email,
@@ -53,6 +54,7 @@ class Api::UserResource < JSONAPI::Resource
 
   has_many :credits
   has_one :handled_by, class_name: "User"
+  has_many :notifications
 
   filter :status, default: "pending,invalid_documentation"
 
@@ -78,5 +80,16 @@ class Api::UserResource < JSONAPI::Resource
         payroll_receipt
         proof_of_address
       ]
+  end
+
+  private
+
+  def notify_status_changed
+    if @model.saved_change_to_status?
+      UserStatusChangeNotifier.with(
+        record: @model,
+        handler: context[:current_user].first_name
+      ).deliver(User.with_any_role(:admin, :requests))
+    end
   end
 end

@@ -20,6 +20,14 @@ class User < ApplicationRecord
            dependent: :delete_all # or :destroy if you need callbacks
 
   has_many :credits, dependent: :destroy
+  has_many :notifications,
+           as: :recipient,
+           dependent: :destroy,
+           class_name: "Noticed::Notification"
+  has_many :notification_mentions,
+           as: :record,
+           dependent: :destroy,
+           class_name: "Noticed::Event"
   has_one_attached :identity_document
   has_one_attached :bank_statement
   has_one_attached :payroll_receipt
