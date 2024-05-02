@@ -85,23 +85,64 @@ class Api::UserResource < JSONAPI::Resource
   private
 
   def notify_status_changed
-    handler =
+    handler_name =
       "#{context[:current_user].first_name} #{context[:current_user].last_name}"
     if @model.saved_change_to_status?
-      # Requests notifier
-      if @model.status != "pre-authorized" && @model.status != "new"
-        RequestsNotifier.with(record: @model, handler: handler).deliver(
+      if @model.status == "pending"
+        PendingUserNotifier.with(record: @model).deliver(
           User.with_any_role(:admin, :requests)
         )
       end
-      # PreAuthorizations notifier
-      if @model.status == "pre-authorization" || @model.status == "denied" ||
-           @model.status == "pre-authorized"
-        PreAuthorizationsNotifier.with(
+      if @model.status == "invalid-documentation"
+        InvalidDocumentationUserNotifier.with(
           record: @model,
-          handler: handler
-        ).deliver(User.with_any_role(:admin, :pre_authorizations))
+          handler_name: handler_name
+        ).deliver(User.with_any_role(:admin, :requests))
+      end
+      if @model.status == "pre-authorization"
+        PreAuthorizationUserNotifier.with(
+          record: @model,
+          handler_name: handler_name
+        ).deliver(User.with_any_role(:admin, :requests, :pre_authorizations))
+      end
+      if @model.status == "pre-authorized"
+        PreAuthorizedUserNotifier.with(
+          record: @model,
+          handler_name: handler_name
+        ).deliver(
+          User.with_any_role(:admin, :pre_authorizations, :authorizations)
+        )
+      end
+      if @model.status == "denied"
+        DeniedUserNotifier.with(
+          record: @model,
+          handler_name: handler_name
+        ).deliver(User.with_any_role(:admin, :requests, :pre_authorizations))
       end
     end
   end
 end
+
+# - DeniedUserNotifier
+
+# - When a user status is set to "denied"
+
+# - Roles: :admin, :pre_authorizations, :requests
+
+# - Content: "Solicitud del cliente #{record.first_name} denegada por #{params[:handler_name]}"
+
+# - InvalidDocumentationUserNotifier
+
+# - When a user status is set to "invalid-documentation"
+
+# - Roles: :admin, :requests
+
+# - Content: "Solicitud del cliente #{record.first_name} marcada con documentación inválida por #{params[:handler_name]}"
+
+# - PreAuthorizedUserNotifier
+
+# - When a user status is set to "pre-authorized"
+
+# - Roles: :admin, :pre_authorizations
+
+# - Content: "Solicitud del cliente #{record.first_name} pre autorizada por #{params[:handler_name]}"
