@@ -87,9 +87,13 @@ class Api::UserResource < JSONAPI::Resource
   def notify_status_changed
     if @model.saved_change_to_status?
       handler_name =
-        "#{context[:current_user].first_name} #{context[:current_user].last_name}" if context[
-        :current_user
-      ]
+        (
+          if current_user_or_nil
+            "#{context[:current_user].first_name} #{context[:current_user].last_name}"
+          else
+            nil
+          end
+        )
 
       if @model.status == "pending"
         PendingUserNotifier.with(record: @model).deliver(
@@ -124,6 +128,11 @@ class Api::UserResource < JSONAPI::Resource
         ).deliver(User.with_any_role(:admin, :requests, :pre_authorizations))
       end
     end
+  end
+
+  def current_user_or_nil
+    nil if context.nil?
+    context[:current_user]
   end
 end
 
