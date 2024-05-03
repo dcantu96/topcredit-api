@@ -1,4 +1,5 @@
 class Api::CreditResource < JSONAPI::Resource
+  after_save :notify_status_changed
   attributes :status,
              :loan,
              :dispersion_receipt,
@@ -50,4 +51,45 @@ class Api::CreditResource < JSONAPI::Resource
                TermOffering.where(company_id: value[0]).pluck(:id)
            )
          end
+
+  private
+
+  def notify_status_changed
+    if @model.saved_change_to_status?
+      if @model.status == "pending"
+        PendingCreditNotifier.with(record: @model).deliver(
+          User.with_any_role(:admin, :authorizations)
+        )
+      end
+      if @model.status == "invalid-documentation"
+        InvalidDocumentationCreditNotifier.with(
+          record: @model,
+          handler_name: handler_name
+        ).deliver(User.with_any_role(:admin, :authorizations))
+      end
+      if @model.status == "authorized"
+        AuthorizedCreditNotifier.with(
+          record: @model,
+          handler_name: handler_name
+        ).deliver(User.with_any_role(:admin, :dispersions, :authorizations))
+      end
+      if @model.status == "denied"
+        DeniedCreditNotifier.with(
+          record: @model,
+          handler_name: handler_name
+        ).deliver(User.with_any_role(:admin, :authorizations))
+      end
+      if @model.status == "dispersed"
+        DispersedCreditNotifier.with(
+          record: @model,
+          handler_name: handler_name
+        ).deliver(User.with_any_role(:admin, :dispersions))
+      end
+    end
+  end
+
+  def handler_name
+    nil if context.nil? || context[:current_user].nil?
+    "#{context[:current_user].first_name} #{context[:current_user].last_name}"
+  end
 end
