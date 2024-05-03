@@ -85,14 +85,18 @@ class Api::UserResource < JSONAPI::Resource
   private
 
   def notify_status_changed
-    handler_name =
-      "#{context[:current_user].first_name} #{context[:current_user].last_name}"
     if @model.saved_change_to_status?
+      handler_name =
+        "#{context[:current_user].first_name} #{context[:current_user].last_name}" if context[
+        :current_user
+      ]
+
       if @model.status == "pending"
         PendingUserNotifier.with(record: @model).deliver(
           User.with_any_role(:admin, :requests)
         )
       end
+
       if @model.status == "invalid-documentation"
         InvalidDocumentationUserNotifier.with(
           record: @model,
