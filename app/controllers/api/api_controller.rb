@@ -6,6 +6,7 @@ class Api::ApiController < ApplicationController
   protect_from_forgery with: :null_session
 
   def context
+    return unless doorkeeper_token
     current_user =
       User.includes(:roles).find(doorkeeper_token.resource_owner_id)
     { current_user: current_user }
