@@ -20,6 +20,9 @@ Rails.application.routes.draw do
     jsonapi_resources :term_offerings
     jsonapi_resources :payments
     jsonapi_resources :notifications
+    namespace :admin do
+      resources :staff, only: %i[index show create update destroy]
+    end
     post "auth/resend-confirmation-instructions" =>
            "auth#resend_confirmation_instructions"
     get "me", to: "me#me"
