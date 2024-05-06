@@ -1,4 +1,5 @@
 class Credit < ApplicationRecord
+  before_save :add_amortization_and_credit_amount
   belongs_to :borrower,
              foreign_key: "user_id",
              class_name: "User",
@@ -36,6 +37,9 @@ class Credit < ApplicationRecord
   validate :dispersed_credits_must_have_dispersed_at
   validate :dispersed_and_authorized_credit_must_have_approved_documents
   validate :borrower_must_be_pre_authorized
+  validate :validate_loan_change, if: :will_save_change_to_loan?
+  validate :validate_term_offering_change,
+           if: :will_save_change_to_term_offering_id?
 
   scope :dispersed, -> { where(status: "dispersed") }
 
@@ -139,7 +143,42 @@ class Credit < ApplicationRecord
 
   def borrower_must_be_pre_authorized
     if borrower.status != "pre-authorized"
-      errors.add(:status, :borrower_must_be_pre_authorized)
+      errors.add(:borrower, :must_be_pre_authorized)
+    end
+  end
+
+  def validate_loan_change
+    if (status == "dispersed" || status == "authorized") && persisted?
+      errors.add(:loan, :cannot_change_after_authorized)
+    end
+  end
+
+  def validate_term_offering_change
+    if (status == "dispersed" || status == "authorized") && persisted?
+      errors.add(:term_offering, :cannot_change_after_authorized)
+    end
+  end
+
+  def add_amortization_and_credit_amount
+    if will_save_change_to_term_offering_id? || will_save_change_to_loan?
+      self.amortization =
+        Payments.amortization(
+          loan,
+          term_offering.term.duration,
+          term_offering.company.rate_with_tax
+        )
+      self.credit_amount =
+        Payments.credit_amount(loan, term_offering.company.rate_with_tax)
+
+      self.max_loan_amount =
+        Payments.max_loan_amount(
+          Payments.max_debt_capacity(
+            borrower.salary,
+            term_offering.company.borrowing_capacity
+          ),
+          term_offering.term.duration,
+          term_offering.company.rate_with_tax
+        )
     end
   end
 end

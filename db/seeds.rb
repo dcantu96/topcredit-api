@@ -1035,6 +1035,7 @@ def save_user(user)
     puts "#{action} user #{user.email}"
     user.assign_attributes password: "123456"
     user.save
+    user.confirm
   end
 
   # Validate the user record. This will run the validations in the user model
@@ -1059,34 +1060,6 @@ def save_credit(credit)
     throw :abort
   end
   credit
-end
-
-def calculate_total_payments_in_months(duration, duration_type)
-  case duration_type
-  when "years"
-    duration * 12
-  when "months"
-    duration
-  else
-    duration / 2
-  end
-end
-
-def calculate_amortization(loan_amount, total_payments, rate)
-  # Calculate the monthly interest rate
-  monthly_interest_rate = rate / 12.0
-
-  # Calculate the monthly payment using the formula for amortization
-  if monthly_interest_rate == 0
-    monthly_payment = loan_amount / total_payments.to_f
-  else
-    monthly_payment =
-      (monthly_interest_rate * loan_amount) /
-        (1 - (1 + monthly_interest_rate)**-total_payments)
-  end
-
-  # Return the monthly payment rounded to two decimal places
-  monthly_payment.round(2)
 end
 
 # Create or update the users
@@ -1153,17 +1126,10 @@ File.open(file_path, "rb") do |file|
     installation_date = credit.installation_date
     term_duration = credit.term_offering.term.duration
     term_duration_type = credit.term_offering.term.duration_type
-    total_payments =
-      calculate_total_payments_in_months(term_duration, term_duration_type)
-    amortization_amount =
-      calculate_amortization(
-        credit.loan,
-        total_payments,
-        credit.term_offering.company.rate
-      )
 
     payments_to_create =
       Payments.calculate_payments_count(
+        Date.today,
         installation_date.to_date,
         term_duration_type,
         term_duration
@@ -1179,7 +1145,7 @@ File.open(file_path, "rb") do |file|
         )
       Payment.create(
         credit_id: credit.id,
-        amount: amortization_amount,
+        amount: credit.amortization,
         paid_at: paid_at.in_time_zone.to_datetime,
         number: i + 1
       )

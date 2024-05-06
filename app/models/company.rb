@@ -46,4 +46,8 @@ class Company < ApplicationRecord
       errors.add(:terms, :invalid_terms, type: required_duration_type_label)
     end
   end
+
+  def rate_with_tax
+    Payments.interest_rate_with_tax(rate)
+  end
 end

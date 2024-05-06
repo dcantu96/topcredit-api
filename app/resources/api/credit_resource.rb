@@ -31,6 +31,9 @@ class Api::CreditResource < JSONAPI::Resource
              :dispersed_at,
              :installation_status,
              :installation_date,
+             :amortization,
+             :credit_amount,
+             :max_loan_amount,
              :created_at,
              :updated_at
   has_one :borrower, foreign_key: "user_id", class_name: "User"

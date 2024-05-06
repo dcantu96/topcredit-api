@@ -38,13 +38,14 @@ module Payments
   end
 
   def self.calculate_payments_count(
+    date,
     installation_date,
     duration_type,
     total_payments
   )
     installation_date =
       installation_date.to_date unless installation_date.is_a?(Date)
-    current_date = Date.today
+    current_date = date
 
     first_payment_date =
       get_next_payment_date(installation_date, duration_type, 0)
@@ -59,5 +60,28 @@ module Payments
     end
 
     payment_count
+  end
+
+  def self.credit_amount(loan_amount, rate)
+    # Calculate the credit amount based on the loan amount and the rate
+    (loan_amount * (1 + rate)).round(2)
+  end
+
+  def self.amortization(loan_amount, payments, rate)
+    ((credit_amount(loan_amount, rate)) / payments).round(2)
+  end
+
+  def self.max_debt_capacity(salary, company_max_debt_capacity)
+    # Calculate the maximum debt capacity based on the salary and company limit
+    (salary * company_max_debt_capacity).round(2)
+  end
+
+  def self.max_loan_amount(max_debt_capacity, payments, rate)
+    # Calculate the maximum loan amount based on the debt capacity and the duration
+    (max_debt_capacity * payments / (1 + rate)).round(2)
+  end
+
+  def self.interest_rate_with_tax(rate)
+    (rate * 1.16).round(4)
   end
 end
