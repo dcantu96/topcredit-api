@@ -7,9 +7,16 @@ es:
         status: "Estatus"
         loan: "Préstamo"
         borrower: "Solicitante"
+        term_offering: "Oferta de plazo"
     errors:
       models:
         credit:
           attributes:
+            term_offering:
+              required: "es requerida"
+              cannot_change_after_authorized: "no se puede cambiar después de ser autorizado"
+            loan:
+              cannot_change_after_authorized: "no se puede cambiar después de ser autorizado"
             borrower:
               required: "es requerido"
+              must_be_pre_authorized: "debe estar pre-autorizado"
