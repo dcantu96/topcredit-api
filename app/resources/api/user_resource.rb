@@ -57,6 +57,7 @@ class Api::UserResource < JSONAPI::Resource
   has_many :notifications
 
   filter :status, default: "pending,invalid_documentation"
+  filter :employee_number
 
   filter :by_role,
          apply: ->(records, value, _options) do
