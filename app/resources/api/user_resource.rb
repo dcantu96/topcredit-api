@@ -56,8 +56,32 @@ class Api::UserResource < JSONAPI::Resource
   has_one :handled_by, class_name: "User"
   has_many :notifications
 
-  filter :status, default: "pending,invalid_documentation"
+  filter :status
   filter :employee_number
+  filter :last_name
+
+  filter :query,
+         apply: ->(records, value, _options) do
+           query_strings = value.first.split(" ")
+
+           # Initialize an array to store the individual conditions
+           conditions = []
+           # Initialize a hash to store the query parameters
+           query_params = {}
+
+           # Iterate over each query string and build conditions
+           query_strings.each_with_index do |query_string, index|
+             param_key = "query#{index}"
+             conditions << "(first_name ILIKE :#{param_key} OR last_name ILIKE :#{param_key} OR email ILIKE :#{param_key} OR employee_number ILIKE :#{param_key})"
+             query_params[param_key.to_sym] = "%#{query_string}%"
+           end
+
+           # Combine the conditions into a single string separated by OR
+           combined_conditions = conditions.join(" OR ")
+
+           # Combine conditions and query params
+           records.where(combined_conditions, query_params)
+         end
 
   filter :by_role,
          apply: ->(records, value, _options) do
