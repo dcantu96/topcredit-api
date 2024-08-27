@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_05_06_170651) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_05_012607) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -72,6 +72,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_06_170651) do
     t.decimal "amortization", precision: 15, scale: 2
     t.decimal "credit_amount", precision: 15, scale: 2
     t.decimal "max_loan_amount", precision: 15, scale: 2
+    t.string "hr_status"
     t.index ["term_offering_id"], name: "index_credits_on_term_offering_id"
     t.index ["user_id"], name: "index_credits_on_user_id"
   end
@@ -218,9 +219,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_06_170651) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string "unconfirmed_email"
+    t.bigint "hr_company_id"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["handled_by_id"], name: "index_users_on_handled_by_id"
+    t.index ["hr_company_id"], name: "index_users_on_hr_company_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
@@ -243,5 +246,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_05_06_170651) do
   add_foreign_key "payments", "credits"
   add_foreign_key "term_offerings", "companies"
   add_foreign_key "term_offerings", "terms"
+  add_foreign_key "users", "companies", column: "hr_company_id"
   add_foreign_key "users", "users", column: "handled_by_id"
 end

@@ -175,6 +175,14 @@ staff_users = [
     phone: "1234567890",
     status: "new",
     roles: [:dispersions]
+  },
+  {
+    first_name: "RH",
+    last_name: "User",
+    email: "rh@staff.com",
+    phone: "1234567890",
+    status: "new",
+    roles: [:hr]
   }
 ]
 
@@ -480,6 +488,7 @@ users_with_documents_and_credit_and_documents = [
       payroll_receipt_status: "approved",
       loan: 5000,
       status: "dispersed",
+      hr_status: "active",
       installation_status: "installed",
       dispersed_at: "2024-04-10T10:00:00Z",
       installation_date: "2024-04-15T10:00:00Z"
@@ -507,6 +516,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -538,6 +548,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -569,6 +580,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -600,6 +612,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -631,6 +644,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -662,6 +676,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -693,6 +708,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -724,6 +740,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -755,6 +772,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -786,6 +804,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
@@ -817,6 +836,7 @@ users_with_documents_and_credit_and_documents = [
     proof_of_address_status: "approved",
     credit: {
       status: "dispersed",
+      hr_status: "active",
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",

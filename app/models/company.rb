@@ -3,6 +3,7 @@ class Company < ApplicationRecord
   has_many :terms, through: :term_offerings
   has_many :credits, through: :term_offerings
   has_many :payments, through: :credits
+  has_many :hr_users, class_name: "User", foreign_key: "hr_company_id"
 
   validates :borrowing_capacity,
             numericality: {

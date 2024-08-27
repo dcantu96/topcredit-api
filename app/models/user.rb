@@ -9,6 +9,8 @@ class User < ApplicationRecord
          :validatable,
          :confirmable
 
+  belongs_to :hr_company, class_name: "Company", optional: true
+
   has_many :access_grants,
            class_name: "Doorkeeper::AccessGrant",
            foreign_key: :resource_owner_id,

@@ -54,6 +54,7 @@ class Api::UserResource < JSONAPI::Resource
 
   has_many :credits
   has_one :handled_by, class_name: "User"
+  has_one :hr_company, class_name: "Company", optional: true
   has_many :notifications
 
   filter :status

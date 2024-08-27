@@ -33,9 +33,11 @@ class Credit < ApplicationRecord
   validates_inclusion_of :installation_status,
                          in: %w[installed],
                          allow_nil: true
+  validates_inclusion_of :hr_status, in: %w[active inactive], allow_nil: true
   validate :dispersed_credits_must_have_dispersion_receipt
   validate :dispersed_credits_must_have_dispersed_at
   validate :dispersed_and_authorized_credit_must_have_approved_documents
+  validate :dispersed_credits_must_be_active
   validate :borrower_must_be_pre_authorized
   validate :validate_loan_change, if: :will_save_change_to_loan?
   validate :validate_term_offering_change,
@@ -119,6 +121,12 @@ class Credit < ApplicationRecord
   def dispersed_credits_must_have_dispersion_receipt
     if status == "dispersed" && !dispersion_receipt.attached?
       errors.add(:dispersion_receipt, :blank)
+    end
+  end
+
+  def dispersed_credits_must_be_active
+    if status == "dispersed" && hr_status != "active"
+      errors.add(:hr_status, :must_be_active)
     end
   end
 

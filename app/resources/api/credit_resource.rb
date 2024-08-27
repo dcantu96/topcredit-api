@@ -22,6 +22,7 @@ class Api::CreditResource < JSONAPI::Resource
              :payroll_receipt_content_type,
              :payroll_receipt_uploaded_at,
              :reason,
+             :hr_status,
              :contract_status,
              :contract_rejection_reason,
              :authorization_status,
