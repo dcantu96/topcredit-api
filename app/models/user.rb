@@ -1,5 +1,17 @@
 class User < ApplicationRecord
   rolify
+  scope :staff,
+        -> do
+          with_any_role(
+            :admin,
+            :requests,
+            :pre_authorizations,
+            :authorizations,
+            :dispersions,
+            :payments,
+            :hr
+          )
+        end
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable,

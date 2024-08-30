@@ -1,8 +1,5 @@
 class Api::MeController < Api::AuthorizedController
   def me
-    current_user =
-      User.includes(:roles).find(doorkeeper_token.resource_owner_id)
-
     render json: {
              id: current_user.id,
              email: current_user.email,

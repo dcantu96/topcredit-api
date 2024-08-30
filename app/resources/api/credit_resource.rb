@@ -47,6 +47,8 @@ class Api::CreditResource < JSONAPI::Resource
     super - %i[contract authorization payroll_receipt dispersion_receipt]
   end
 
+  filter :hr_status
+
   filter :company,
          apply: ->(records, value, _options) do
            return records if value[0] == nil
