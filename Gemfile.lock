@@ -114,6 +114,9 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    devise_invitable (2.0.9)
+      actionmailer (>= 5.0)
+      devise (>= 4.6)
     diff-lcs (1.5.1)
     doorkeeper (5.6.8)
       railties (>= 5)
@@ -300,6 +303,7 @@ DEPENDENCIES
   bootsnap
   debug
   devise
+  devise_invitable (~> 2.0.0)
   doorkeeper
   dotenv-rails
   jsonapi-resources (~> 0.10.0)

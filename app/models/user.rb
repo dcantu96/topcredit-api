@@ -14,12 +14,15 @@ class User < ApplicationRecord
         end
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable,
+  devise :invitable,
+         :database_authenticatable,
          :registerable,
          :recoverable,
          :rememberable,
          :validatable,
-         :confirmable
+         :confirmable,
+         :invitable,
+         invite_for: 1.weeks
 
   belongs_to :hr_company, class_name: "Company", optional: true
 
@@ -59,7 +62,8 @@ class User < ApplicationRecord
                            pre-authorized
                            invalid-documentation
                            denied
-                         ]
+                         ],
+                         if: :user_not_staff?
   validates_inclusion_of :state,
                          in: %w[
                            AGU
@@ -197,8 +201,14 @@ class User < ApplicationRecord
 
   private
 
+  def user_not_staff?
+    roles.empty?
+  end
+
   def email_of_company_domain
-    if Company.find_by(domain: email.split("@").last).nil?
+    if roles.empty? && Company.find_by(domain: email.split("@").last).nil?
+      binding.pry
+
       errors.add(:email, :invalid_domain)
     end
   end

@@ -49,6 +49,7 @@ gem "bootsnap", require: false
 gem "rack-cors"
 gem "sendgrid-ruby"
 gem "noticed", "~> 2.2"
+gem "devise_invitable", "~> 2.0.0"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

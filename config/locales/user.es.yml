@@ -7,10 +7,13 @@ es:
         state: "Estado"
         email: "Correo Electrónico"
         status: "Estatus"
+        invitation_token: "Código de Invitación"
     errors:
       models:
         user:
           attributes:
+            invitation_token:
+              invalid: "no es válido"
             status:
               inclusion: "%{value} no es válido"
             state:

@@ -14,6 +14,7 @@ class Api::Admin::StaffController < Api::AuthorizedController
                      first_name: user.first_name,
                      last_name: user.last_name,
                      email: user.email,
+                     phone: user.phone,
                      created_at: user.created_at,
                      roles: user.all_roles
                    }
@@ -29,6 +30,7 @@ class Api::Admin::StaffController < Api::AuthorizedController
                last_name: @staff_user.last_name,
                email: @staff_user.email,
                created_at: @staff_user.created_at,
+               phone: @staff_user.phone,
                roles: @staff_user.all_roles,
                hr_company_id: @staff_user.hr_company_id
              }
@@ -36,27 +38,13 @@ class Api::Admin::StaffController < Api::AuthorizedController
   end
 
   def create
-    staff_user = User.new(staff_params)
-
-    if staff_user.save
-      render json: {
-               data: {
-                 id: staff_user.id,
-                 first_name: staff_user.first_name,
-                 last_name: staff_user.last_name,
-                 email: staff_user.email,
-                 created_at: staff_user.created_at,
-                 roles: staff_user.all_roles,
-                 hr_company_id: @staff_user.hr_company_id
-               }
-             },
-             status: :created
-    else
-      render json: {
-               errors: staff_user.errors.full_messages
-             },
-             status: :unprocessable_entity
-    end
+    new_staff_user =
+      User.invite!(staff_params.except(:roles)) do |user|
+        user.skip_invitation = true
+      end
+    update_user_roles(new_staff_user, staff_params[:roles])
+    new_staff_user.deliver_invitation
+    binding.pry
   end
 
   def update
@@ -70,6 +58,7 @@ class Api::Admin::StaffController < Api::AuthorizedController
                  last_name: @staff_user.last_name,
                  email: @staff_user.email,
                  created_at: @staff_user.created_at,
+                 phone: @staff_user.phone,
                  roles: @staff_user.all_roles,
                  hr_company_id: @staff_user.hr_company_id
                }
@@ -114,6 +103,7 @@ class Api::Admin::StaffController < Api::AuthorizedController
         :last_name,
         :created_at,
         :hr_company_id,
+        :phone,
         roles: []
       )
   end
