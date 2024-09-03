@@ -24,7 +24,7 @@ class SendgridMailer < Devise::Mailer
     personalization.add_dynamic_template_data(
       {
         "userName" => record.first_name,
-        "role" => record.all_roles.first,
+        "role" => User::ROLE_OPTIONS[record.all_roles.first],
         "invitationUrl" => base_url # Generate invitation URL
       }
     )

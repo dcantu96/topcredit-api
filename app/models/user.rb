@@ -1,5 +1,17 @@
 class User < ApplicationRecord
   rolify
+
+  ROLE_OPTIONS = {
+    "admin" => "Administrador",
+    "authorizations" => "Autorizaciones",
+    "payments" => "Cobranza",
+    "dispersions" => "Dispersiones",
+    "installations" => "Instalaciones",
+    "pre_authorizations" => "Pre-autorizaciones",
+    "hr" => "RH",
+    "requests" => "Solicitudes"
+  }.freeze
+
   scope :staff,
         -> do
           with_any_role(
