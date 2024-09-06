@@ -44,7 +44,6 @@ class Api::Admin::StaffController < Api::AuthorizedController
       end
     update_user_roles(new_staff_user, staff_params[:roles])
     new_staff_user.deliver_invitation
-    binding.pry
   end
 
   def update

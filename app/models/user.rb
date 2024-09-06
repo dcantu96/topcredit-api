@@ -219,8 +219,6 @@ class User < ApplicationRecord
 
   def email_of_company_domain
     if roles.empty? && Company.find_by(domain: email.split("@").last).nil?
-      binding.pry
-
       errors.add(:email, :invalid_domain)
     end
   end
