@@ -105,6 +105,14 @@ class Credit < ApplicationRecord
     payroll_receipt.blob.created_at if payroll_receipt.attached?
   end
 
+  def next_expected_payment
+    Payments.get_next_payment_date(
+      installation_date,
+      term_offering.term.duration_type,
+      payments.count
+    )
+  end
+
   private
 
   def invalid_documentation_status
