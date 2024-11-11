@@ -490,8 +490,8 @@ users_with_documents_and_credit_and_documents = [
       status: "dispersed",
       hr_status: "active",
       installation_status: "installed",
-      dispersed_at: "2024-04-10T10:00:00Z",
-      installation_date: "2024-04-15T10:00:00Z"
+      dispersed_at: 1.months.ago.change(day: 10).at_noon,
+      installation_date: 1.months.ago.change(day: 15).at_noon
     }
   },
   {
@@ -520,7 +520,7 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2024-01-19T15:00:00Z",
+      dispersed_at: 2.months.ago.change(day: 19).at_noon,
       installation_date: nil,
       installation_status: nil,
       loan: 20_000
@@ -552,7 +552,7 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2024-04-20T15:00:00Z",
+      dispersed_at: 1.months.ago.change(day: 20).at_noon,
       installation_date: nil,
       installation_status: nil,
       loan: 30_000
@@ -584,7 +584,7 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2024-02-01T09:30:00Z",
+      dispersed_at: 1.months.ago.change(day: 1).at_noon,
       installation_date: nil,
       installation_status: nil,
       loan: 22_000
@@ -616,9 +616,9 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2022-12-15T14:45:00Z",
       installation_status: "installed",
-      installation_date: "2022-12-30T10:00:00Z",
+      dispersed_at: 4.months.ago.change(day: 15).at_noon,
+      installation_date: 4.months.ago.change(day: 30).at_noon,
       loan: 28_000
     }
   },
@@ -648,9 +648,9 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2022-11-10T16:30:00Z",
       installation_status: "installed",
-      installation_date: "2022-12-05T09:00:00Z",
+      dispersed_at: 2.months.ago.change(day: 10).at_noon,
+      installation_date: 1.months.ago.change(day: 05).at_noon,
       loan: 30_000
     }
   },
@@ -680,9 +680,9 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2022-10-25T13:00:00Z",
       installation_status: "installed",
-      installation_date: "2022-11-15T11:00:00Z",
+      dispersed_at: 6.months.ago.change(day: 25).at_noon,
+      installation_date: 5.months.ago.change(day: 15).at_noon,
       loan: 32_000
     }
   },
@@ -712,7 +712,7 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2024-04-21T10:00:00Z",
+      dispersed_at: 1.months.ago.change(day: 21).at_noon,
       installation_status: nil,
       installation_date: nil,
       loan: 27_500
@@ -744,9 +744,9 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2023-06-10T16:30:00Z",
       installation_status: "installed",
-      installation_date: "2023-06-29T10:00:00Z",
+      dispersed_at: 12.months.ago.change(day: 10).at_noon,
+      installation_date: 12.months.ago.change(day: 29).at_noon,
       loan: 24_000
     }
   },
@@ -776,9 +776,9 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2024-02-20T10:00:00Z",
       installation_status: "installed",
-      installation_date: "2024-03-01T10:00:00Z",
+      dispersed_at: 1.months.ago.change(day: 22).at_noon,
+      installation_date: 1.months.ago.change(day: 30).at_noon,
       loan: 27_000
     }
   },
@@ -808,10 +808,10 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2024-04-01T12:00:00Z",
       loan: 26_000,
       installation_status: "installed",
-      installation_date: "2024-04-15T15:00:00Z"
+      dispersed_at: 4.months.ago.change(day: 1).at_noon,
+      installation_date: 4.months.ago.change(day: 15).at_noon
     }
   },
   {
@@ -840,10 +840,10 @@ users_with_documents_and_credit_and_documents = [
       contract_status: "approved",
       authorization_status: "approved",
       payroll_receipt_status: "approved",
-      dispersed_at: "2024-03-20T11:00:00Z",
       loan: 25_000,
       installation_status: "installed",
-      installation_date: "2024-03-30T14:30:00Z"
+      dispersed_at: 2.months.ago.change(day: 20).at_noon,
+      installation_date: 2.months.ago.change(day: 30).at_noon
     }
   }
 ]
