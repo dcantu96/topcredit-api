@@ -1,41 +1,42 @@
 class Api::CreditResource < JSONAPI::Resource
   after_save :notify_status_changed
-  attributes :status,
-             :loan,
-             :dispersion_receipt,
-             :contract,
-             :contract_url,
-             :contract_filename,
-             :contract_size,
-             :contract_content_type,
-             :contract_uploaded_at,
-             :authorization,
-             :authorization_url,
-             :authorization_filename,
-             :authorization_size,
+  attributes :amortization,
              :authorization_content_type,
-             :authorization_uploaded_at,
-             :payroll_receipt,
-             :payroll_receipt_url,
-             :payroll_receipt_filename,
-             :payroll_receipt_size,
-             :payroll_receipt_content_type,
-             :payroll_receipt_uploaded_at,
-             :reason,
-             :hr_status,
-             :contract_status,
-             :contract_rejection_reason,
-             :authorization_status,
+             :authorization_filename,
              :authorization_rejection_reason,
-             :payroll_receipt_status,
-             :payroll_receipt_rejection_reason,
-             :dispersed_at,
-             :installation_status,
-             :installation_date,
-             :amortization,
-             :credit_amount,
-             :max_loan_amount,
+             :authorization_size,
+             :authorization_status,
+             :authorization_uploaded_at,
+             :authorization_url,
+             :authorization,
+             :contract_content_type,
+             :contract_filename,
+             :contract_rejection_reason,
+             :contract_size,
+             :contract_status,
+             :contract_uploaded_at,
+             :contract_url,
+             :contract,
              :created_at,
+             :credit_amount,
+             :dispersed_at,
+             :dispersion_receipt,
+             :hr_status,
+             :installation_date,
+             :installation_status,
+             :loan,
+             :max_loan_amount,
+             :next_expected_payment,
+             :payroll_receipt_content_type,
+             :payroll_receipt_filename,
+             :payroll_receipt_rejection_reason,
+             :payroll_receipt_size,
+             :payroll_receipt_status,
+             :payroll_receipt_uploaded_at,
+             :payroll_receipt_url,
+             :payroll_receipt,
+             :reason,
+             :status,
              :updated_at
   has_one :borrower, foreign_key: "user_id", class_name: "User"
   has_one :term_offering
@@ -56,6 +57,168 @@ class Api::CreditResource < JSONAPI::Resource
              term_offering_id:
                TermOffering.where(company_id: value[0]).pluck(:id)
            )
+         end
+
+  filter :dispersed_at_range,
+         apply: ->(records, value, _options) do
+           Time.zone = "Monterrey"
+           first_half = Time.current.day <= 15
+           case value.first
+           when "last-7-days"
+             return(
+               records.joins(:credits).where(
+                 credits: {
+                   dispersed_at: 7.days.ago.beginning_of_day..Time.current
+                 }
+               )
+             )
+           when "last-payment"
+             return(
+               records.joins(:credits).where(
+                 credits: {
+                   dispersed_at:
+                     (
+                       if first_half
+                         1.month.ago.change(day: 16).beginning_of_day..1
+                           .month
+                           .ago
+                           .end_of_month
+                       else
+                         Time.current.change(day: 1).beginning_of_day..Time
+                           .current
+                           .change(day: 15)
+                           .end_of_day
+                       end
+                     )
+                 }
+               )
+             )
+           when "last-2-payments"
+             return(
+               records.joins(:credits).where(
+                 credits: {
+                   dispersed_at:
+                     (
+                       if first_half
+                         1.month.ago.beginning_of_month..1
+                           .month
+                           .ago
+                           .end_of_month
+                       else
+                         1.month.ago.change(day: 16).beginning_of_day..Time
+                           .current
+                           .change(day: 15)
+                           .end_of_day
+                       end
+                     )
+                 }
+               )
+             )
+           when "last-4-payments"
+             return(
+               records.joins(:credits).where(
+                 credits: {
+                   dispersed_at:
+                     (
+                       if first_half
+                         2.months.ago.beginning_of_month..1
+                           .month
+                           .ago
+                           .end_of_month
+                       else
+                         2.months.ago.change(day: 16).beginning_of_day..Time
+                           .current
+                           .change(day: 15)
+                           .end_of_day
+                       end
+                     )
+                 }
+               )
+             )
+           else
+             return records
+           end
+         end
+
+  filter :installation_date_range,
+         apply: ->(records, value, _options) do
+           Time.zone = "Monterrey"
+           first_half = Time.current.day <= 15
+           case value.first
+           when "last-7-days"
+             return(
+               records.joins(:credits).where(
+                 credits: {
+                   installation_date: 7.days.ago.beginning_of_day..Time.current
+                 }
+               )
+             )
+           when "last-payment"
+             return(
+               records.joins(:credits).where(
+                 credits: {
+                   installation_date:
+                     (
+                       if first_half
+                         1.month.ago.change(day: 16).beginning_of_day..1
+                           .month
+                           .ago
+                           .end_of_month
+                       else
+                         Time.current.change(day: 1).beginning_of_day..Time
+                           .current
+                           .change(day: 15)
+                           .end_of_day
+                       end
+                     )
+                 }
+               )
+             )
+           when "last-2-payments"
+             return(
+               records.joins(:credits).where(
+                 credits: {
+                   installation_date:
+                     (
+                       if first_half
+                         1.month.ago.beginning_of_month..1
+                           .month
+                           .ago
+                           .end_of_month
+                       else
+                         1.month.ago.change(day: 16).beginning_of_day..Time
+                           .current
+                           .change(day: 15)
+                           .end_of_day
+                       end
+                     )
+                 }
+               )
+             )
+           when "last-4-payments"
+             return(
+               records.joins(:credits).where(
+                 credits: {
+                   installation_date:
+                     (
+                       if first_half
+                         2.months.ago.beginning_of_month..1
+                           .month
+                           .ago
+                           .end_of_month
+                       else
+                         2.months.ago.change(day: 16).beginning_of_day..Time
+                           .current
+                           .change(day: 15)
+                           .end_of_day
+                       end
+                     )
+                 }
+               )
+             )
+           else
+             return records
+           end
          end
 
   private
