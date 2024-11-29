@@ -106,6 +106,7 @@ class Credit < ApplicationRecord
   end
 
   def next_expected_payment
+    return nil if installation_date.nil?
     Payments.get_next_payment_date(
       installation_date,
       term_offering.term.duration_type,
