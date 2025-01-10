@@ -20,6 +20,7 @@ Rails.application.routes.draw do
     jsonapi_resources :term_offerings
     jsonapi_resources :payments
     jsonapi_resources :notifications
+    get "events", to: "events#index", as: "events"
     namespace :admin do
       resources :staff, only: %i[index show create update destroy]
     end

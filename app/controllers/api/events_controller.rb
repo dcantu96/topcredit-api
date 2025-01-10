@@ -10,7 +10,11 @@ class Api::EventsController < Api::AuthorizedController
 
   # Parse filters from JSON:API request parameters
   def set_filters
-    @filters = params.dig(:filter)&.transform_keys(&:underscore) || {}
+    permitted_params = params.permit(filter: [:type], page: %i[limit number])
+
+    @filters = {
+      type: permitted_params.dig(:filter, :type)&.split(",") # Split comma-separated values
+    }
   end
 
   # Serialize the events for JSON:API compliance
@@ -23,9 +27,9 @@ class Api::EventsController < Api::AuthorizedController
             id: event.id.to_s,
             type: "events",
             attributes: {
-              name: event.name,
-              created_at: event.created_at,
-              updated_at: event.updated_at
+              name: event.type,
+              message: events.first.notifications.first.message,
+              createdAt: event.created_at
             },
             relationships: {
               record: serialize_record(event.record)
