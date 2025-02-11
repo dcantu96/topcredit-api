@@ -1,7 +1,8 @@
 FactoryBot.define do
   factory :company do
-    sequence(:name) { |n| "Empresa #{n}" }
-    sequence(:domain) { |n| "company#{n}.com" }
+    transient { fake_name { FFaker::Company.name } }
+    name { fake_name }
+    domain { "#{fake_name.gsub(/\s+/, "").downcase}.com" }
     employee_salary_frequency { %w[biweekly monthly].sample }
     rate { rand(0.2..0.7).round(3) } # Random rate between 0.2 and 0.7
     borrowing_capacity { rand(0.2..0.4).round(3) } # Random capacity

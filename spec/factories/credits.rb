@@ -5,8 +5,13 @@ DISPERSION_RECEIPT_FILENAME = "dispersion_receipt.png"
 
 FactoryBot.define do
   factory :credit do
-    association :borrower, factory: %i[user pre_authorized]
     association :term_offering
+
+    borrower do
+      company = term_offering.company
+      create(:user, :pre_authorized, custom_domain: company.domain)
+    end
+
     status { "new" }
     loan { rand(5_000..50_000) }
     contract_status { "pending" }

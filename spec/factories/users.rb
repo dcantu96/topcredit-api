@@ -69,10 +69,12 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:hr) }
     end
 
+    transient { custom_domain { nil } }
+
     after(:build) do |user, evaluator|
       if user.email.blank?
         user.email =
-          "#{user.first_name.downcase}.#{user.last_name.downcase}@#{Company.all.sample.domain}"
+          "#{user.first_name.downcase}.#{user.last_name.downcase}@#{evaluator.custom_domain || Company.all.sample.domain}"
       end
     end
 
