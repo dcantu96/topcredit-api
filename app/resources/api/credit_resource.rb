@@ -48,15 +48,24 @@ class Api::CreditResource < JSONAPI::Resource
     super - %i[contract authorization payroll_receipt dispersion_receipt]
   end
 
-  filter :hr_status
+  filter :hr_status,
+         apply: ->(records, value, _options) do
+           return records if value[0] == nil
+           if value[0] == "null"
+             return records.where(hr_status: nil)
+           else
+             records.where(hr_status: value[0])
+           end
+         end
 
   filter :company,
          apply: ->(records, value, _options) do
            return records if value[0] == nil
-           records.where(
-             term_offering_id:
-               TermOffering.where(company_id: value[0]).pluck(:id)
-           )
+
+           records
+             .includes(term_offering: :company)
+             .references(:companies)
+             .where(companies: { id: value[0] })
          end
 
   filter :dispersed_at_range,
