@@ -5,6 +5,8 @@ class Company < ApplicationRecord
   has_many :payments, through: :credits
   has_many :hr_users, class_name: "User", foreign_key: "hr_company_id"
 
+  validates_uniqueness_of :domain
+  validates_uniqueness_of :name
   validates :borrowing_capacity,
             numericality: {
               greater_than: 0,
