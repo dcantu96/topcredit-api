@@ -79,7 +79,7 @@ module TopcreditApi
     # CORS configuration
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins "http://localhost:3000" # Specify the origin of your front-end app
+        origins "http://localhost:3000", "http://192.168.68.61:3000" # Add the IP address
         resource "*", # Specify which resources can be accessed
                  headers: :any, # Allow all headers
                  methods: %i[get post put patch delete options head], # Allow all HTTP methods
