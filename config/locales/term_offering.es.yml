@@ -1,0 +1,12 @@
+es:
+  activerecord:
+    models:
+      term_offering: "Oferta de plazo"
+    attributes:
+      term:
+        duration: "Duración"
+        durationType: "Medida"
+    errors:
+      models:
+        term_offering:
+          taken: "%{value} ya está en uso"

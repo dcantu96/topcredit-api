@@ -31,3 +31,4 @@ es:
   errors:
     messages:
       blank: no puede estar en blanco
+      record_invalid: "La validación falló: %{errors}"
