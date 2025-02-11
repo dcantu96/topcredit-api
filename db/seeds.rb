@@ -24,41 +24,45 @@ create_list(:term, 4, :biweekly)
 create_list(:term, 4, :monthly)
 
 # Create users.
+company = create(:company, term_count: 2)
+10.times do
+  create(
+    :credit,
+    :with_documents,
+    :dispersed,
+    :installed,
+    term_offering: company.term_offerings.sample
+  )
+end
 company = create(:company, term_count: 3)
-create_list(
-  :credit,
-  10,
-  :with_documents,
-  :dispersed,
-  :installed,
-  term_offering: company.term_offerings.sample
-)
+20.times do
+  create(
+    :credit,
+    :with_documents,
+    :dispersed,
+    :installed,
+    term_offering: company.term_offerings.sample
+  )
+end
 company = create(:company, term_count: 3)
-create_list(
-  :credit,
-  20,
-  :with_documents,
-  :dispersed,
-  :installed,
-  term_offering: company.term_offerings.sample
-)
+100.times do
+  create(
+    :credit,
+    :with_documents,
+    :dispersed,
+    :installed,
+    term_offering: company.term_offerings.sample
+  )
+end
 company = create(:company, term_count: 3)
-create_list(
-  :credit,
-  100,
-  :with_documents,
-  :dispersed,
-  :installed,
-  term_offering: company.term_offerings.sample
-)
-company = create(:company, term_count: 3)
-create_list(
-  :credit,
-  300,
-  :with_documents,
-  :dispersed,
-  :installed,
-  term_offering: company.term_offerings.sample
-)
+400.times do
+  create(
+    :credit,
+    :with_documents,
+    :dispersed,
+    :installed,
+    term_offering: company.term_offerings.sample
+  )
+end
 
 puts "Seeds finished"
