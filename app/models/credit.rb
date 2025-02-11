@@ -34,6 +34,7 @@ class Credit < ApplicationRecord
                          in: %w[installed],
                          allow_nil: true
   validates_inclusion_of :hr_status, in: %w[active inactive], allow_nil: true
+  validate :borrower_email_matches_term_offering_company_domain
   validate :dispersed_credits_must_have_dispersion_receipt
   validate :dispersed_credits_must_have_dispersed_at
   validate :dispersed_and_authorized_credit_must_have_approved_documents
@@ -115,6 +116,18 @@ class Credit < ApplicationRecord
   end
 
   private
+
+  def borrower_email_matches_term_offering_company_domain
+    return unless borrower && term_offering && term_offering.company
+
+    borrower_domain = borrower.email.split("@").last
+    unless term_offering.company.domain.include?(borrower_domain)
+      errors.add(
+        :borrower,
+        "email domain must match the term offering's company domain"
+      )
+    end
+  end
 
   def invalid_documentation_status
     if status == "invalid-documentation" &&
