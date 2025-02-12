@@ -51,7 +51,7 @@ FactoryBot.define do
 
     trait :dispersed do
       status { "dispersed" }
-      hr_status { "active" }
+      hr_status { "approved" }
       dispersed_at { FFaker::Time.between(24.months.ago, Time.current) }
       contract_status { "approved" }
       authorization_status { "approved" }

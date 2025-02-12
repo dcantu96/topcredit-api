@@ -33,7 +33,7 @@ class Credit < ApplicationRecord
   validates_inclusion_of :installation_status,
                          in: %w[installed],
                          allow_nil: true
-  validates_inclusion_of :hr_status, in: %w[active inactive], allow_nil: true
+  validates_inclusion_of :hr_status, in: %w[approved denied], allow_nil: true
   validate :borrower_email_matches_term_offering_company_domain
   validate :dispersed_credits_must_have_dispersion_receipt
   validate :dispersed_credits_must_have_dispersed_at
@@ -147,8 +147,8 @@ class Credit < ApplicationRecord
   end
 
   def dispersed_credits_must_be_active
-    if status == "dispersed" && hr_status != "active"
-      errors.add(:hr_status, :must_be_active)
+    if status == "dispersed" && hr_status != "approved"
+      errors.add(:hr_status, :must_be_approved)
     end
   end
 

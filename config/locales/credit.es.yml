@@ -21,4 +21,4 @@ es:
               required: "es requerido"
               must_be_pre_authorized: "debe estar pre-autorizado"
             hr_status:
-              must_be_active: "debe estar activo"
+              must_be_approved: "debe estar aprobado por Recursos Humanos"
