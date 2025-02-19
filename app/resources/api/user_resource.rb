@@ -81,7 +81,16 @@ class Api::UserResource < JSONAPI::Resource
            combined_conditions = conditions.join(" OR ")
 
            # Combine conditions and query params
-           records.where(combined_conditions, query_params)
+           records
+             .without_role(:admin)
+             .without_role(:authorizations)
+             .without_role(:companies)
+             .without_role(:dispersions)
+             .without_role(:hr)
+             .without_role(:payments)
+             .without_role(:pre_authorizations)
+             .without_role(:requests)
+             .where(combined_conditions, query_params)
          end
 
   filter :by_role,
@@ -90,8 +99,13 @@ class Api::UserResource < JSONAPI::Resource
              return(
                records
                  .without_role(:admin)
+                 .without_role(:authorizations)
+                 .without_role(:companies)
+                 .without_role(:dispersions)
+                 .without_role(:hr)
+                 .without_role(:payments)
+                 .without_role(:pre_authorizations)
                  .without_role(:requests)
-                 .without_role("pre_authorizations")
              )
            end
            records.with_role(value[0])
