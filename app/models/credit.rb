@@ -10,6 +10,10 @@ class Credit < ApplicationRecord
   has_one_attached :authorization
   has_one_attached :payroll_receipt
   has_one_attached :dispersion_receipt
+  validate :first_discount_date_can_only_be_mid_month_or_end_of_month
+  # add payments when first_discount_date is present
+  after_save :add_payments, if: :hr_approved?
+  before_save :add_first_discount_date, if: :will_save_change_to_dispersed_at?
 
   validates_inclusion_of :status,
                          in: %w[
@@ -29,9 +33,6 @@ class Credit < ApplicationRecord
                          allow_nil: true
   validates_inclusion_of :payroll_receipt_status,
                          in: %w[pending approved rejected],
-                         allow_nil: true
-  validates_inclusion_of :installation_status,
-                         in: %w[installed],
                          allow_nil: true
   validates_inclusion_of :hr_status, in: %w[approved denied], allow_nil: true
   validate :borrower_email_matches_term_offering_company_domain
@@ -106,16 +107,19 @@ class Credit < ApplicationRecord
     payroll_receipt.blob.created_at if payroll_receipt.attached?
   end
 
-  def next_expected_payment
-    return nil if installation_date.nil?
-    Payments.get_next_payment_date(
-      installation_date,
-      term_offering.term.duration_type,
-      payments.count
-    )
+  private
+
+  def hr_approved?
+    hr_status == "approved"
   end
 
-  private
+  def first_discount_date_can_only_be_mid_month_or_end_of_month
+    return unless first_discount_date
+
+    unless first_discount_date.day == 15 || first_discount_date.end_of_month?
+      errors.add(:first_discount_date, :invalid)
+    end
+  end
 
   def borrower_email_matches_term_offering_company_domain
     return unless borrower && term_offering && term_offering.company
@@ -208,6 +212,37 @@ class Credit < ApplicationRecord
           ),
           term_offering.term.duration,
           term_offering.company.rate_with_tax
+        )
+    end
+  end
+
+  def add_first_discount_date
+    return if dispersed_at.nil?
+
+    self.first_discount_date =
+      Payments.first_expected_payment_date(
+        dispersed_at,
+        term_offering.term.duration_type
+      )
+  end
+
+  def add_payments
+    term_duration = term_offering.term.duration
+    term_duration_type = term_offering.term.duration_type
+    payment_count = 1
+    expected_payment_date = first_discount_date
+
+    while payment_count <= term_duration
+      payments.create!(
+        expected_at: expected_payment_date,
+        expected_amount: amortization,
+        number: payment_count
+      )
+      payment_count += 1
+      expected_payment_date =
+        Payments.get_next_payment_date(
+          expected_payment_date,
+          term_duration_type
         )
     end
   end

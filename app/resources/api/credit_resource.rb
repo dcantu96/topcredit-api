@@ -22,11 +22,9 @@ class Api::CreditResource < JSONAPI::Resource
              :dispersed_at,
              :dispersion_receipt,
              :hr_status,
-             :installation_date,
-             :installation_status,
              :loan,
              :max_loan_amount,
-             :next_expected_payment,
+             :first_discount_date,
              :payroll_receipt_content_type,
              :payroll_receipt_filename,
              :payroll_receipt_rejection_reason,
@@ -42,7 +40,7 @@ class Api::CreditResource < JSONAPI::Resource
   has_one :term_offering
   has_many :payments
 
-  filters :status, :installation_status
+  filters :status
 
   def fetchable_fields
     super - %i[contract authorization payroll_receipt dispersion_receipt]
@@ -149,7 +147,7 @@ class Api::CreditResource < JSONAPI::Resource
            end
          end
 
-  filter :installation_date_range,
+  filter :first_discount_date_range,
          apply: ->(records, value, _options) do
            Time.zone = "Monterrey"
            first_half = Time.current.day <= 15
@@ -158,7 +156,8 @@ class Api::CreditResource < JSONAPI::Resource
              return(
                records.joins(:credits).where(
                  credits: {
-                   installation_date: 7.days.ago.beginning_of_day..Time.current
+                   first_discount_date:
+                     7.days.ago.beginning_of_day..Time.current
                  }
                )
              )
@@ -166,7 +165,7 @@ class Api::CreditResource < JSONAPI::Resource
              return(
                records.joins(:credits).where(
                  credits: {
-                   installation_date:
+                   first_discount_date:
                      (
                        if first_half
                          1.month.ago.change(day: 16).beginning_of_day..1
@@ -187,7 +186,7 @@ class Api::CreditResource < JSONAPI::Resource
              return(
                records.joins(:credits).where(
                  credits: {
-                   installation_date:
+                   first_discount_date:
                      (
                        if first_half
                          1.month.ago.beginning_of_month..1
@@ -208,7 +207,7 @@ class Api::CreditResource < JSONAPI::Resource
              return(
                records.joins(:credits).where(
                  credits: {
-                   installation_date:
+                   first_discount_date:
                      (
                        if first_half
                          2.months.ago.beginning_of_month..1
