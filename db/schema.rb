@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_02_213202) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_19_193149) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,9 +66,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_02_213202) do
     t.string "payroll_receipt_status"
     t.string "payroll_receipt_rejection_reason"
     t.datetime "dispersed_at"
-    t.string "installation_status"
     t.bigint "term_offering_id", null: false
-    t.datetime "installation_date"
+    t.datetime "first_discount_date"
     t.decimal "amortization", precision: 15, scale: 2
     t.decimal "credit_amount", precision: 15, scale: 2
     t.decimal "max_loan_amount", precision: 15, scale: 2
@@ -145,11 +144,13 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_02_213202) do
 
   create_table "payments", force: :cascade do |t|
     t.bigint "credit_id", null: false
-    t.float "amount", null: false
-    t.datetime "paid_at", null: false
+    t.float "amount"
+    t.datetime "paid_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "number", null: false
+    t.datetime "expected_at"
+    t.float "expected_amount"
     t.index ["credit_id"], name: "index_payments_on_credit_id"
     t.index ["number", "credit_id"], name: "index_payments_on_number_and_credit_id", unique: true
   end
