@@ -1,8 +1,19 @@
 FactoryBot.define do
   factory :term do
-    sequence(:name) { |n| "#{n * 14} Quincenas" } # Dynamic name
+    transient do
+      unique_duration do
+        existing_durations = Term.pluck(:duration)
+        random_duration = FFaker::Random.rand(8...40)
+        loop do
+          break unless existing_durations.include?(random_duration)
+          random_duration = FFaker::Random.rand(8...40)
+        end
+        random_duration
+      end
+    end
+
     duration_type { %w[two-weeks months].sample } # Randomly choose
-    duration { rand(8...40) }
+    duration { unique_duration }
 
     after(:build) do |term| #Ensure duration is coherent
       term.name =

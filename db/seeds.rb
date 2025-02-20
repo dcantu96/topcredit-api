@@ -30,7 +30,7 @@ company = create(:company, term_count: 2)
     :credit,
     :with_documents,
     :dispersed,
-    :installed,
+    :hr_approved,
     term_offering: company.term_offerings.sample
   )
 end
@@ -40,7 +40,7 @@ company = create(:company, term_count: 3)
     :credit,
     :with_documents,
     :dispersed,
-    :installed,
+    :hr_approved,
     term_offering: company.term_offerings.sample
   )
 end
@@ -50,7 +50,7 @@ company = create(:company, term_count: 3)
     :credit,
     :with_documents,
     :dispersed,
-    :installed,
+    :hr_approved,
     term_offering: company.term_offerings.sample
   )
 end
@@ -60,7 +60,7 @@ company = create(:company, term_count: 3)
     :credit,
     :with_documents,
     :dispersed,
-    :installed,
+    :hr_approved,
     term_offering: company.term_offerings.sample
   )
 end

@@ -13,7 +13,7 @@ FactoryBot.define do
     end
 
     status { "new" }
-    loan { rand(5_000..50_000) }
+    loan { FFaker::Random.rand(5_000..50_000) }
     contract_status { "pending" }
     authorization_status { "pending" }
     payroll_receipt_status { "pending" }
@@ -51,53 +51,29 @@ FactoryBot.define do
 
     trait :dispersed do
       status { "dispersed" }
-      hr_status { "approved" }
       dispersed_at { FFaker::Time.between(24.months.ago, Time.current) }
       contract_status { "approved" }
       authorization_status { "approved" }
       payroll_receipt_status { "approved" }
     end
 
-    trait :installed do
-      installation_status { "installed" }
-      installation_date do
-        FFaker::Time.between(dispersed_at, dispersed_at + 2.weeks)
-      end
+    trait :hr_approved do
+      hr_status { "approved" }
     end
 
-    # Create payments after a dispersed credit is created
     after(:create) do |credit|
-      if credit.dispersed_at? && credit.installation_date?
-        installation_date = credit.installation_date
-        term_duration = credit.term_offering.term.duration
-        term_duration_type = credit.term_offering.term.duration_type
+      return if credit.status != "dispersed" || credit.hr_status != "approved"
 
-        payments_to_create =
-          Payments.calculate_payments_count(
-            Date.today,
-            installation_date.to_date,
-            term_duration_type,
-            term_duration
-          )
-        next if payments_to_create.zero?
-
-        puts "Creating #{payments_to_create} payments for credit (User: #{credit.borrower.email})"
-        payments_to_create.times do |i|
-          paid_at =
-            Payments.get_next_payment_date(
-              installation_date.to_date,
-              term_duration_type,
-              i
-            )
-          create(
-            :payment, # Use FactoryBot's create method!
-            credit: credit,
-            paid_at: paid_at,
-            amount: credit.amortization, # Ensure your Credit model calculates this
-            number: i + 1 # Set number correctly.
+      # update payments that have already passed
+      credit
+        .payments
+        .where("expected_at <= ?", Time.current)
+        .each do |payment|
+          payment.update!(
+            paid_at: payment.expected_at,
+            amount: credit.amortization
           )
         end
-      end
     end
   end
 end

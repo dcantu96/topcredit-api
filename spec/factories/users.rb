@@ -13,7 +13,7 @@ FactoryBot.define do
     confirmed_at { Time.current } # Automatically confirm users
     status { "new" }
     rfc { FFaker::IdentificationMX.rfc }
-    salary { rand(2_000..10_000) }
+    salary { FFaker::Random.rand(2_000..10_000) }
     address_line_one { FFaker::Address.street_address }
     address_line_two { FFaker::Address.secondary_address }
     city { FFaker::AddressMX.municipality }
