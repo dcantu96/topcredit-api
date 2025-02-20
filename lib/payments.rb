@@ -1,65 +1,49 @@
 module Payments
-  def self.get_next_payment_date(installation_date, term_duration_type, i)
-    installation_date =
-      installation_date.to_date unless installation_date.is_a?(Date)
+  def self.first_expected_payment_date(dispersed_at, term_duration_type)
+    # Determine the initial payment base: 15th or end of the month
+    # if duration is two-weeks, the first payment is the 15th or the end of the month
+    #   if dispersed before the 4th of the month, the first payment is the 15th else if dispersed before the 20th, the first payment is the end of the month, else the first payment is the 15th of the next month
+    # else if the payment is before the 20th, the first payment is the end of the month, else the first payment is the end of next the month
 
+    if term_duration_type == "two-weeks"
+      if dispersed_at.at_noon.day < 4
+        return dispersed_at.change(day: 15).at_noon
+      end
+      return dispersed_at.end_of_month.at_noon if dispersed_at.at_noon.day < 20
+      return dispersed_at.advance(months: 1).change(day: 15).at_noon
+    end
+
+    return dispersed_at.end_of_month.at_noon if dispersed_at.day < 20
+    dispersed_at.advance(months: 1).end_of_month.at_noon
+  end
+
+  def self.get_next_payment_date(prev_payment_date, term_duration_type)
     case term_duration_type
     when "months"
-      # Simply advance by the number of months and always return the last day of the month
-      return installation_date.advance(months: i).end_of_month
+      if prev_payment_date.at_noon != prev_payment_date.end_of_month.at_noon
+        return prev_payment_date.end_of_month.at_noon
+      end
+      return prev_payment_date.advance(months: 1).end_of_month.at_noon
     when "two-weeks"
-      return calculate_two_weeks_payment(installation_date, i)
+      return get_next_two_week_payment(prev_payment_date)
     else
       # Fallback to returning the installation date if an unrecognized term is provided
-      return installation_date
+      return first_discount_date
     end
   end
 
-  def self.calculate_two_weeks_payment(installation_date, i)
+  def self.get_next_two_week_payment(prev_payment_date)
     # Determine the initial payment base: 15th or end of the month
-    base_date =
-      if installation_date.day <= 15
-        installation_date.change(day: 15)
-      else
-        installation_date.end_of_month
-      end
 
-    # Adjust for subsequent cycles
-    i.times do
-      if base_date.day == 15
-        base_date = base_date.end_of_month
-      else
-        base_date =
-          base_date.beginning_of_month.advance(months: 1).change(day: 15)
-      end
+    if prev_payment_date.day < 15
+      return prev_payment_date.change(day: 15).at_noon
     end
 
-    base_date
-  end
-
-  def self.calculate_payments_count(
-    date,
-    installation_date,
-    duration_type,
-    total_payments
-  )
-    installation_date =
-      installation_date.to_date unless installation_date.is_a?(Date)
-    current_date = date
-
-    first_payment_date =
-      get_next_payment_date(installation_date, duration_type, 0)
-    payment_count = 0
-    next_payment_date = first_payment_date
-
-    # Iterate to count payments until either current date is reached or the total payments limit
-    while next_payment_date <= current_date && payment_count < total_payments
-      payment_count += 1
-      next_payment_date =
-        get_next_payment_date(installation_date, duration_type, payment_count)
+    if prev_payment_date.at_noon != prev_payment_date.end_of_month.at_noon
+      return prev_payment_date.end_of_month.at_noon
     end
 
-    payment_count
+    prev_payment_date.advance(months: 1).change(day: 15).at_noon
   end
 
   def self.credit_amount(loan_amount, rate)

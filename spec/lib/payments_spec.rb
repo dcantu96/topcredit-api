@@ -5,199 +5,206 @@ require "payments" # Ensure this line is here if Rails does not autoload lib fil
 
 RSpec.describe Payments, type: :lib do
   describe "get next payment date" do
-    it "returns the end of the month for monthly term if installation is at the beginning of the month" do
+    it "returns the end of the month for monthly term if dispersion is at the beginning of the month" do
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-05"), "months", 0)
-      expect(result).to eq(Date.parse("2024-01-31"))
+        Payments.get_next_payment_date(DateTime.parse("2024-01-05"), "months")
+      expect(result).to eq(DateTime.parse("2024-01-31").at_noon)
     end
 
-    it "advances correctly when duration type is months and installation date is the last day of the month" do
+    it "advances correctly when duration type is months and first discount date is the last day of the month" do
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "months", 1)
-      expect(result).to eq(Date.parse("2024-02-29"))
+        Payments.get_next_payment_date(DateTime.parse("2024-01-31"), "months")
+      expect(result).to eq(DateTime.parse("2024-02-29").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "months", 2)
-      expect(result).to eq(Date.parse("2024-03-31"))
+        Payments.get_next_payment_date(DateTime.parse("2024-02-29"), "months")
+      expect(result).to eq(DateTime.parse("2024-03-31").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "months", 3)
-      expect(result).to eq(Date.parse("2024-04-30"))
+        Payments.get_next_payment_date(DateTime.parse("2024-03-31"), "months")
+      expect(result).to eq(DateTime.parse("2024-04-30").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "months", 4)
-      expect(result).to eq(Date.parse("2024-05-31"))
+        Payments.get_next_payment_date(DateTime.parse("2024-04-30"), "months")
+      expect(result).to eq(DateTime.parse("2024-05-31").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "months", 5)
-      expect(result).to eq(Date.parse("2024-06-30"))
+        Payments.get_next_payment_date(DateTime.parse("2024-05-31"), "months")
+      expect(result).to eq(DateTime.parse("2024-06-30").at_noon)
+      result =
+        Payments.get_next_payment_date(DateTime.parse("2023-12-31"), "months")
+      expect(result).to eq(DateTime.parse("2024-01-31").at_noon)
     end
 
-    it "advances correctly when duration type is months and installation date is the 17th" do
+    it "advances correctly when duration type is months and dispersion date is the 17th" do
       result =
-        Payments.get_next_payment_date(Date.parse("2018-01-17"), "months", 0)
-      expect(result).to eq(Date.parse("2018-01-31"))
+        Payments.get_next_payment_date(DateTime.parse("2018-01-17"), "months")
+      expect(result).to eq(DateTime.parse("2018-01-31").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2018-01-17"), "months", 1)
-      expect(result).to eq(Date.parse("2018-02-28"))
+        Payments.get_next_payment_date(DateTime.parse("2018-01-31"), "months")
+      expect(result).to eq(DateTime.parse("2018-02-28").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2018-01-17"), "months", 2)
-      expect(result).to eq(Date.parse("2018-03-31"))
+        Payments.get_next_payment_date(DateTime.parse("2018-02-28"), "months")
+      expect(result).to eq(DateTime.parse("2018-03-31").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2018-01-17"), "months", 3)
-      expect(result).to eq(Date.parse("2018-04-30"))
+        Payments.get_next_payment_date(DateTime.parse("2018-03-31"), "months")
+      expect(result).to eq(DateTime.parse("2018-04-30").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2018-01-17"), "months", 4)
-      expect(result).to eq(Date.parse("2018-05-31"))
+        Payments.get_next_payment_date(DateTime.parse("2018-04-30"), "months")
+      expect(result).to eq(DateTime.parse("2018-05-31").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2018-01-17"), "months", 5)
-      expect(result).to eq(Date.parse("2018-06-30"))
+        Payments.get_next_payment_date(DateTime.parse("2018-05-31"), "months")
+      expect(result).to eq(DateTime.parse("2018-06-30").at_noon)
     end
 
-    it "advances to the correct day when duration type is two-weeks and installation date is the last day of the month" do
+    it "advances to the correct day when duration type is two-weeks and first discount date is the last day of the month" do
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "two-weeks", 0)
-      expect(result).to eq(Date.parse("2024-01-31"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2024-01-31"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2024-02-15").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "two-weeks", 1)
-      expect(result).to eq(Date.parse("2024-02-15"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2024-02-15"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2024-02-29").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "two-weeks", 2)
-      expect(result).to eq(Date.parse("2024-02-29"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2024-02-29"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2024-03-15").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "two-weeks", 3)
-      expect(result).to eq(Date.parse("2024-03-15"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2024-03-15"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2024-03-31").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "two-weeks", 4)
-      expect(result).to eq(Date.parse("2024-03-31"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2024-03-31"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2024-04-15").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2024-01-31"), "two-weeks", 5)
-      expect(result).to eq(Date.parse("2024-04-15"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2024-04-15"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2024-04-30").at_noon)
     end
 
-    it "advances to the correct day when duration type is two-weeks and installation date is the 4th" do
+    it "advances to the correct day when duration type is two-weeks and prev payment is the 4th" do
       result =
-        Payments.get_next_payment_date(Date.parse("2022-05-04"), "two-weeks", 0)
-      expect(result).to eq(Date.parse("2022-05-15"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2022-05-04"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2022-05-15").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2022-05-04"), "two-weeks", 1)
-      expect(result).to eq(Date.parse("2022-05-31"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2022-05-04"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2022-05-15").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2022-05-04"), "two-weeks", 2)
-      expect(result).to eq(Date.parse("2022-06-15"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2022-05-04"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2022-05-15").at_noon)
     end
 
-    it "advances to the correct day when duration type is two-weeks and installation date is the 15th" do
+    it "advances to the correct day when duration type is two-weeks and prev payment is the 15th" do
       result =
-        Payments.get_next_payment_date(Date.parse("2022-05-15"), "two-weeks", 0)
-      expect(result).to eq(Date.parse("2022-05-15"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2022-05-15"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2022-05-31").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2022-05-15"), "two-weeks", 1)
-      expect(result).to eq(Date.parse("2022-05-31"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2022-05-31"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2022-06-15").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2022-05-15"), "two-weeks", 2)
-      expect(result).to eq(Date.parse("2022-06-15"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2022-06-15"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2022-06-30").at_noon)
       result =
-        Payments.get_next_payment_date(Date.parse("2022-05-15"), "two-weeks", 3)
-      expect(result).to eq(Date.parse("2022-06-30"))
-      result =
-        Payments.get_next_payment_date(Date.parse("2022-05-15"), "two-weeks", 4)
-      expect(result).to eq(Date.parse("2022-07-15"))
+        Payments.get_next_payment_date(
+          DateTime.parse("2022-06-30"),
+          "two-weeks"
+        )
+      expect(result).to eq(DateTime.parse("2022-07-15").at_noon)
     end
   end
 
-  describe "calculate payments count" do
-    it "returns valid count when duration type is months" do
+  describe "first expected payment date" do
+    it "returns the correct first expected payment date for monthly term" do
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-04-20"),
-          "months",
-          3
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-01-05"),
+          "months"
         )
-      expect(result).to eq(0)
+      expect(result).to eq(DateTime.parse("2024-01-31").at_noon)
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-03-23"),
-          "months",
-          3
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-01-31"),
+          "months"
         )
-      expect(result).to eq(1)
+      expect(result).to eq(DateTime.parse("2024-02-29").at_noon)
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-03-31"),
-          "months",
-          3
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-02-29"),
+          "months"
         )
-      expect(result).to eq(1)
+      expect(result).to eq(DateTime.parse("2024-03-31").at_noon)
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-01-31"),
-          "months",
-          3
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-03-20"),
+          "months"
         )
-      expect(result).to eq(3)
+      expect(result).to eq(DateTime.parse("2024-04-30").at_noon)
+      result =
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-03-19"),
+          "months"
+        )
+      expect(result).to eq(DateTime.parse("2024-03-31").at_noon)
     end
-
-    it "returns valid count when duration type is two-weeks" do
+    it "returns the correct first expected payment date for two-weeks term" do
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-04-20"),
-          "two-weeks",
-          3
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-01-05"),
+          "two-weeks"
         )
-      expect(result).to eq(0)
+      expect(result).to eq(DateTime.parse("2024-01-31").at_noon)
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-03-23"),
-          "two-weeks",
-          3
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-01-31"),
+          "two-weeks"
         )
-      expect(result).to eq(2)
+      expect(result).to eq(DateTime.parse("2024-02-15").at_noon)
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-03-31"),
-          "two-weeks",
-          3
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-02-15"),
+          "two-weeks"
         )
-      expect(result).to eq(2)
+      expect(result).to eq(DateTime.parse("2024-02-29").at_noon)
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-01-31"),
-          "two-weeks",
-          6
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-02-29"),
+          "two-weeks"
         )
-      expect(result).to eq(6)
-    end
-
-    it "returns the maximum number of payments when the total possible payments is greater than the loan duration" do
+      expect(result).to eq(DateTime.parse("2024-03-15").at_noon)
       result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-01-31"),
-          "months",
-          2
+        Payments.first_expected_payment_date(
+          DateTime.parse("2024-03-07"),
+          "two-weeks"
         )
-      expect(result).to eq(2)
-      result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2019-04-06"),
-          "months",
-          9
-        )
-      expect(result).to eq(9)
-      result =
-        Payments.calculate_payments_count(
-          Date.parse("2024-04-24"),
-          Date.parse("2024-01-31"),
-          "two-weeks",
-          4
-        )
-      expect(result).to eq(4)
+      expect(result).to eq(DateTime.parse("2024-03-31").at_noon)
     end
   end
 
