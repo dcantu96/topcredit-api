@@ -80,10 +80,6 @@
 
 # - Content: "Crédito del cliente #{record.first_name} dispersado por #{params[:handler_name]}"
 
-# - InstalledCreditNotifier
-
-# - When a credit installation_status is set to "installed"
-
 # - Roles: :admin, :payments
 
 # - Content: "Crédito del cliente #{record.first_name} instalado por #{params[:handler_name]}"
