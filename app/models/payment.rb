@@ -1,4 +1,6 @@
 class Payment < ApplicationRecord
+  after_save :update_credit_status, if: :fully_paid?
+
   belongs_to :credit
 
   validates_presence_of :credit
@@ -17,10 +19,16 @@ class Payment < ApplicationRecord
 
   private
 
+  def update_credit_status
+    credit.update status: "settled"
+  end
+
+  def fully_paid?
+    credit.fully_paid?
+  end
+
   def credit_must_dispersed
-    unless credit.status == "dispersed" && credit.dispersed_at.present?
-      errors.add(:credit, :must_be_dispersed)
-    end
+    errors.add(:credit, :must_be_dispersed) unless credit.dispersed_at.present?
   end
 
   def credit_must_be_approved_by_hr
