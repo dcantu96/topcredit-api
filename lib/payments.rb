@@ -46,26 +46,132 @@ module Payments
     prev_payment_date.advance(months: 1).change(day: 15).at_noon
   end
 
-  def self.credit_amount(loan_amount, rate)
-    # Calculate the credit amount based on the loan amount and the rate
-    (loan_amount * (1 + rate)).round(2)
-  end
+  def self.max_loan_amount(
+    salary,
+    company_max_debt_capacity,
+    annual_interest_rate,
+    term_duration,
+    term_duration_type
+  )
+    if term_duration_type.downcase == "months"
+      number_of_payments = term_duration
+      period_interest_rate = annual_interest_rate / 12.0
+    elsif term_duration_type.downcase == "two-weeks" ||
+          term_duration_type.downcase == "bi-weekly"
+      number_of_payments = term_duration * 26
+      period_interest_rate = annual_interest_rate / 26.0
+    else
+      raise ArgumentError,
+            "Invalid term_duration_type. Must be 'months' or 'two-weeks'."
+    end
 
-  def self.amortization(loan_amount, payments, rate)
-    ((credit_amount(loan_amount, rate)) / payments).round(2)
-  end
+    employee_max_salary_debt_capacity =
+      (salary * company_max_debt_capacity).round(2) # Use salary directly
 
-  def self.max_debt_capacity(salary, company_max_debt_capacity)
-    # Calculate the maximum debt capacity based on the salary and company limit
-    (salary * company_max_debt_capacity).round(2)
-  end
-
-  def self.max_loan_amount(max_debt_capacity, payments, rate)
-    # Calculate the maximum loan amount based on the debt capacity and the duration
-    (max_debt_capacity * payments / (1 + rate)).round(2)
+    max_loan =
+      employee_max_salary_debt_capacity /
+        (
+          period_interest_rate *
+            (1 + period_interest_rate)**number_of_payments /
+            ((1 + period_interest_rate)**number_of_payments - 1)
+        )
+    max_loan.round(2)
   end
 
   def self.interest_rate_with_tax(rate)
     (rate * 1.16).round(4)
+  end
+
+  def self.helpful_function(
+    principal,
+    annual_interest_rate,
+    term_duration,
+    term_duration_type
+  )
+    if term_duration_type.downcase == "months"
+      number_of_payments = term_duration
+      monthly_interest_rate = annual_interest_rate / 12.0
+    elsif term_duration_type.downcase == "two-weeks" ||
+          term_duration_type.downcase == "bi-weekly" # Allow for "bi-weekly" input
+      number_of_payments = term_duration * 26 # 52 weeks in a year / 2 = 26 two-week periods
+      monthly_interest_rate = annual_interest_rate / 26.0 # Divide annual rate by number of periods.
+    else
+      raise ArgumentError,
+            "Invalid term_duration_type. Must be 'months' or 'two-weeks'."
+    end
+
+    emi =
+      principal *
+        (
+          monthly_interest_rate *
+            (1 + monthly_interest_rate)**number_of_payments
+        ) / ((1 + monthly_interest_rate)**number_of_payments - 1)
+
+    amortization_schedule = []
+    remaining_balance = principal
+    current_date = Date.today.beginning_of_month
+
+    (1..number_of_payments).each do |payment_number|
+      interest_paid = remaining_balance * monthly_interest_rate
+      principal_paid = emi - interest_paid
+      remaining_balance -= principal_paid
+
+      amortization_schedule << {
+        month_year: current_date.strftime("%B %Y"),
+        starting_balance: remaining_balance + principal_paid,
+        interest_paid: interest_paid.round(2),
+        principal_paid: principal_paid.round(2),
+        emi: emi.round(2),
+        ending_balance: remaining_balance.round(2)
+      }
+
+      if term_duration_type.downcase == "months"
+        current_date = current_date.next_month
+      elsif term_duration_type.downcase == "two-weeks" ||
+            term_duration_type.downcase == "bi-weekly"
+        current_date = current_date + 14 # Add 14 days for two weeks
+      end
+    end
+
+    amortization_schedule
+  end
+
+  def self.emi(
+    principal,
+    annual_interest_rate,
+    term_duration,
+    term_duration_type
+  )
+    if term_duration_type.downcase == "months"
+      number_of_payments = term_duration
+      monthly_interest_rate = annual_interest_rate / 12.0
+    elsif term_duration_type.downcase == "two-weeks" ||
+          term_duration_type.downcase == "bi-weekly" # Allow for "bi-weekly" input
+      number_of_payments = term_duration * 26 # 52 weeks in a year / 2 = 26 two-week periods
+      monthly_interest_rate = annual_interest_rate / 26.0 # Divide annual rate by number of periods.
+    else
+      raise ArgumentError,
+            "Invalid term_duration_type. Must be 'months' or 'two-weeks'."
+    end
+
+    (
+      principal *
+        (
+          monthly_interest_rate *
+            (1 + monthly_interest_rate)**number_of_payments
+        ) / ((1 + monthly_interest_rate)**number_of_payments - 1)
+    ).round(2)
+  end
+
+  def self.credit_amount(
+    principal,
+    annual_interest_rate,
+    term_duration,
+    term_duration_type
+  )
+    (
+      emi(principal, annual_interest_rate, term_duration, term_duration_type) *
+        term_duration
+    ).round(2)
   end
 end
