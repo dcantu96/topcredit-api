@@ -20,8 +20,8 @@ FactoryBot.define do
 
     # Trait for a credit with documents (using a file)
     trait :with_documents do
-      transient { file_path { Rails.root.join("db", "assets", "150.png") } }
       status { "pending" }
+      transient { file_path { Rails.root.join("db", "assets", "150.png") } }
       after(:build) do |credit, evaluator|
         credit.contract.attach(
           io: File.open(evaluator.file_path, "rb"),
@@ -49,31 +49,75 @@ FactoryBot.define do
       end
     end
 
-    trait :dispersed do
-      status { "dispersed" }
-      dispersed_at { FFaker::Time.between(24.months.ago, Time.current) }
+    trait :authorized do
+      with_documents
+
+      status { "authorized" }
       contract_status { "approved" }
       authorization_status { "approved" }
       payroll_receipt_status { "approved" }
     end
 
     trait :hr_approved do
+      authorized
+
       hr_status { "approved" }
     end
 
-    after(:create) do |credit|
-      return if credit.status != "dispersed" || credit.hr_status != "approved"
+    trait :dispersed do
+      hr_approved
 
-      # update payments that have already passed
-      credit
-        .payments
-        .where("expected_at <= ?", Time.current)
-        .each do |payment|
-          payment.update!(
-            paid_at: payment.expected_at,
-            amount: credit.amortization
-          )
+      status { "dispersed" }
+      dispersed_at { FFaker::Time.between(24.months.ago, Time.current) }
+
+      after(:create) do |credit|
+        credit
+          .payments
+          .where("expected_at <= ?", Time.current)
+          .each do |payment|
+            payment.update!(
+              paid_at: payment.expected_at,
+              amount: credit.amortization
+            )
+          end
+      end
+    end
+
+    trait :with_missing_payments do
+      dispersed
+
+      transient { num_missing_payments { rand(1..3) } }
+
+      after(:create) do |credit, evaluator|
+        missing_payments =
+          credit
+            .payments
+            .where("expected_at <=?", Time.current)
+            .order(:number)
+            .limit(evaluator.num_missing_payments)
+
+        missing_payments.each do |payment|
+          payment.update!(paid_at: nil, amount: nil)
         end
+      end
+    end
+
+    trait :defaulted do
+      dispersed
+
+      status { "defaulted" }
+
+      after(:create) do |credit|
+        total_payments = credit.payments.count
+        num_missing_payments = (total_payments * 0.5).ceil + 1 # At least 50% + 1
+
+        missing_payments =
+          credit.payments.order(:number).limit(num_missing_payments)
+
+        missing_payments.each do |payment|
+          payment.update!(paid_at: nil, amount: nil)
+        end
+      end
     end
   end
 end
