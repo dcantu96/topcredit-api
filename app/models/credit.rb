@@ -1,5 +1,4 @@
 class Credit < ApplicationRecord
-  before_save :add_amortization_and_credit_amount
   belongs_to :borrower,
              foreign_key: "user_id",
              class_name: "User",
@@ -10,9 +9,9 @@ class Credit < ApplicationRecord
   has_one_attached :authorization
   has_one_attached :payroll_receipt
   has_one_attached :dispersion_receipt
-  validate :first_discount_date_can_only_be_mid_month_or_end_of_month
-  # add payments when first_discount_date is present
-  after_save :add_payments, if: :hr_approved?
+
+  before_save :add_amortization_and_credit_amount
+  after_save :add_payments, if: :saved_change_to_dispersed_at?
   before_save :add_first_discount_date, if: :will_save_change_to_dispersed_at?
 
   validates_inclusion_of :status,
@@ -23,7 +22,8 @@ class Credit < ApplicationRecord
                            authorized
                            denied
                            dispersed
-                           finished
+                           settled
+                           defaulted
                          ]
   validates_inclusion_of :contract_status,
                          in: %w[pending approved rejected],
@@ -42,10 +42,15 @@ class Credit < ApplicationRecord
   validate :dispersed_credits_must_be_active
   validate :borrower_must_be_pre_authorized
   validate :validate_loan_change, if: :will_save_change_to_loan?
+  validate :first_discount_date_can_only_be_mid_month_or_end_of_month
   validate :validate_term_offering_change,
            if: :will_save_change_to_term_offering_id?
 
   scope :dispersed, -> { where(status: "dispersed") }
+
+  def fully_paid?
+    (payments.sum(:amount) + 0.01.to_d) >= credit_amount.to_d
+  end
 
   def contract_url
     contract.blob.url if contract.attached?
@@ -107,6 +112,10 @@ class Credit < ApplicationRecord
     payroll_receipt.blob.created_at if payroll_receipt.attached?
   end
 
+  def dispersed?
+    status == "dispersed"
+  end
+
   private
 
   def hr_approved?
@@ -116,7 +125,8 @@ class Credit < ApplicationRecord
   def first_discount_date_can_only_be_mid_month_or_end_of_month
     return unless first_discount_date
 
-    unless first_discount_date.day == 15 || first_discount_date.end_of_month?
+    if first_discount_date.day != 15 &&
+         first_discount_date.day != first_discount_date.end_of_month.day
       errors.add(:first_discount_date, :invalid)
     end
   end
@@ -196,22 +206,26 @@ class Credit < ApplicationRecord
   def add_amortization_and_credit_amount
     if will_save_change_to_term_offering_id? || will_save_change_to_loan?
       self.amortization =
-        Payments.amortization(
+        Payments.emi(
           loan,
+          term_offering.company.rate_with_tax,
           term_offering.term.duration,
-          term_offering.company.rate_with_tax
+          term_offering.term.duration_type
         )
       self.credit_amount =
-        Payments.credit_amount(loan, term_offering.company.rate_with_tax)
-
+        Payments.credit_amount(
+          loan,
+          term_offering.company.rate_with_tax,
+          term_offering.term.duration,
+          term_offering.term.duration_type
+        )
       self.max_loan_amount =
         Payments.max_loan_amount(
-          Payments.max_debt_capacity(
-            borrower.salary,
-            term_offering.company.borrowing_capacity
-          ),
+          borrower.salary,
+          term_offering.company.borrowing_capacity,
+          term_offering.company.rate_with_tax,
           term_offering.term.duration,
-          term_offering.company.rate_with_tax
+          term_offering.term.duration_type
         )
     end
   end
@@ -227,6 +241,8 @@ class Credit < ApplicationRecord
   end
 
   def add_payments
+    return if payments.count > 0
+
     term_duration = term_offering.term.duration
     term_duration_type = term_offering.term.duration_type
     payment_count = 1

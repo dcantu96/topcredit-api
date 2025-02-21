@@ -53,17 +53,8 @@ module Payments
     term_duration,
     term_duration_type
   )
-    if term_duration_type.downcase == "months"
-      number_of_payments = term_duration
-      period_interest_rate = annual_interest_rate / 12.0
-    elsif term_duration_type.downcase == "two-weeks" ||
-          term_duration_type.downcase == "bi-weekly"
-      number_of_payments = term_duration * 26
-      period_interest_rate = annual_interest_rate / 26.0
-    else
-      raise ArgumentError,
-            "Invalid term_duration_type. Must be 'months' or 'two-weeks'."
-    end
+    period_interest_rate =
+      period_interest_rate(annual_interest_rate, term_duration_type)
 
     employee_max_salary_debt_capacity =
       (salary * company_max_debt_capacity).round(2) # Use salary directly
@@ -71,9 +62,8 @@ module Payments
     max_loan =
       employee_max_salary_debt_capacity /
         (
-          period_interest_rate *
-            (1 + period_interest_rate)**number_of_payments /
-            ((1 + period_interest_rate)**number_of_payments - 1)
+          period_interest_rate * (1 + period_interest_rate)**term_duration /
+            ((1 + period_interest_rate)**term_duration - 1)
         )
     max_loan.round(2)
   end
@@ -88,31 +78,15 @@ module Payments
     term_duration,
     term_duration_type
   )
-    if term_duration_type.downcase == "months"
-      number_of_payments = term_duration
-      monthly_interest_rate = annual_interest_rate / 12.0
-    elsif term_duration_type.downcase == "two-weeks" ||
-          term_duration_type.downcase == "bi-weekly" # Allow for "bi-weekly" input
-      number_of_payments = term_duration * 26 # 52 weeks in a year / 2 = 26 two-week periods
-      monthly_interest_rate = annual_interest_rate / 26.0 # Divide annual rate by number of periods.
-    else
-      raise ArgumentError,
-            "Invalid term_duration_type. Must be 'months' or 'two-weeks'."
-    end
-
     emi =
-      principal *
-        (
-          monthly_interest_rate *
-            (1 + monthly_interest_rate)**number_of_payments
-        ) / ((1 + monthly_interest_rate)**number_of_payments - 1)
+      emi(principal, annual_interest_rate, term_duration, term_duration_type)
 
     amortization_schedule = []
     remaining_balance = principal
     current_date = Date.today.beginning_of_month
 
-    (1..number_of_payments).each do |payment_number|
-      interest_paid = remaining_balance * monthly_interest_rate
+    (1..term_duration).each do |payment_number|
+      interest_paid = remaining_balance * period_interest_rate
       principal_paid = emi - interest_paid
       remaining_balance -= principal_paid
 
@@ -127,13 +101,23 @@ module Payments
 
       if term_duration_type.downcase == "months"
         current_date = current_date.next_month
-      elsif term_duration_type.downcase == "two-weeks" ||
-            term_duration_type.downcase == "bi-weekly"
+      elsif term_duration_type.downcase == "two-weeks"
         current_date = current_date + 14 # Add 14 days for two weeks
       end
     end
 
     amortization_schedule
+  end
+
+  def self.period_interest_rate(annual_interest_rate, term_duration_type)
+    if term_duration_type.downcase == "months"
+      annual_interest_rate / 12.0
+    elsif term_duration_type.downcase == "two-weeks"
+      annual_interest_rate / 26.0
+    else
+      raise ArgumentError,
+            "Invalid term_duration_type. Must be 'months' or 'two-weeks'."
+    end
   end
 
   def self.emi(
@@ -142,24 +126,13 @@ module Payments
     term_duration,
     term_duration_type
   )
-    if term_duration_type.downcase == "months"
-      number_of_payments = term_duration
-      monthly_interest_rate = annual_interest_rate / 12.0
-    elsif term_duration_type.downcase == "two-weeks" ||
-          term_duration_type.downcase == "bi-weekly" # Allow for "bi-weekly" input
-      number_of_payments = term_duration * 26 # 52 weeks in a year / 2 = 26 two-week periods
-      monthly_interest_rate = annual_interest_rate / 26.0 # Divide annual rate by number of periods.
-    else
-      raise ArgumentError,
-            "Invalid term_duration_type. Must be 'months' or 'two-weeks'."
-    end
+    period_interest_rate =
+      period_interest_rate(annual_interest_rate, term_duration_type)
 
     (
       principal *
-        (
-          monthly_interest_rate *
-            (1 + monthly_interest_rate)**number_of_payments
-        ) / ((1 + monthly_interest_rate)**number_of_payments - 1)
+        (period_interest_rate * (1 + period_interest_rate)**term_duration) /
+        ((1 + period_interest_rate)**term_duration - 1)
     ).round(2)
   end
 
