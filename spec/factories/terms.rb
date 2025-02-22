@@ -12,21 +12,21 @@ FactoryBot.define do
       end
     end
 
-    duration_type { %w[two-weeks months].sample } # Randomly choose
+    duration_type { %w[bi-monthly monthly].sample } # Randomly choose
     duration { unique_duration }
 
     after(:build) do |term| #Ensure duration is coherent
       term.name =
-        "#{term.duration} #{term.duration_type == "two-weeks" ? "Quincenas" : "Meses"}"
+        "#{term.duration} #{term.duration_type == "bi-monthly" ? "Quincenas" : "Meses"}"
     end
 
     # You can add traits for specific term types:
-    trait :biweekly do
-      duration_type { "two-weeks" }
+    trait :bi_monthly do
+      duration_type { "bi-monthly" }
     end
 
     trait :monthly do
-      duration_type { "months" }
+      duration_type { "monthly" }
     end
   end
 end

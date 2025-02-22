@@ -13,7 +13,7 @@ FactoryBot.define do
 
       "#{fake_domain.downcase}.com"
     end
-    employee_salary_frequency { %w[biweekly monthly].sample }
+    employee_salary_frequency { %w[bi-monthly monthly].sample }
     rate { FFaker::Random.rand(0.2..0.7).round(3) } # Random rate between 0.2 and 0.7
     borrowing_capacity { FFaker::Random.rand(0.2..0.4).round(3) } # Random capacity
 
@@ -27,7 +27,13 @@ FactoryBot.define do
     # build the associated objects, not create them.
     after(:create) do |company, evaluator|
       term_duration_type =
-        company.employee_salary_frequency == "biweekly" ? "two-weeks" : "months"
+        (
+          if company.employee_salary_frequency == "bi-monthly"
+            "bi-monthly"
+          else
+            "monthly"
+          end
+        )
 
       # Fetch available terms of the correct type.
       available_terms = Term.where(duration_type: term_duration_type)

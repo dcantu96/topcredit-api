@@ -21,7 +21,7 @@ class Company < ApplicationRecord
   validates :employee_salary_frequency,
             presence: true,
             inclusion: {
-              in: %w[biweekly monthly]
+              in: %w[bi-monthly monthly]
             }
   validates :name, presence: true
   validates :rate,
@@ -35,9 +35,9 @@ class Company < ApplicationRecord
   def validate_enabled_terms
     # Determine the required duration type based on employee salary frequency
     required_duration_type =
-      employee_salary_frequency == "biweekly" ? "two-weeks" : "months"
+      employee_salary_frequency == "bi-monthly" ? "bi-monthly" : "monthly"
     required_duration_type_label =
-      employee_salary_frequency == "biweekly" ? "quincenal" : "mensual"
+      employee_salary_frequency == "bi-monthly" ? "quincenal" : "mensual"
 
     # Fetch only enabled term offerings
     enabled_terms =

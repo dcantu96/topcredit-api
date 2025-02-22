@@ -19,7 +19,7 @@ end
 create(:user, :admin, email: "admin@staff.com")
 
 # Create terms.
-create_list(:term, 4, :biweekly)
+create_list(:term, 4, :bi_monthly)
 create_list(:term, 4, :monthly)
 
 # Create users.
