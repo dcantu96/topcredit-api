@@ -93,7 +93,7 @@ FactoryBot.define do
           credit
             .payments
             .where("expected_at <=?", Time.current)
-            .order(:number)
+            .order(number: :desc)
             .limit(evaluator.num_missing_payments)
 
         missing_payments.each do |payment|
