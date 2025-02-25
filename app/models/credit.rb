@@ -12,7 +12,6 @@ class Credit < ApplicationRecord
 
   before_save :add_amortization_and_credit_amount
   after_save :add_payments, if: :saved_change_to_dispersed_at?
-  before_save :add_first_discount_date, if: :will_save_change_to_dispersed_at?
 
   validates_inclusion_of :status,
                          in: %w[
@@ -229,16 +228,6 @@ class Credit < ApplicationRecord
           term_offering.term.duration_type
         )
     end
-  end
-
-  def add_first_discount_date
-    return if dispersed_at.nil?
-
-    self.first_discount_date =
-      Payments.first_expected_payment_date(
-        dispersed_at,
-        term_offering.term.duration_type
-      )
   end
 
   def add_payments
