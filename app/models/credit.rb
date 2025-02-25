@@ -43,6 +43,7 @@ class Credit < ApplicationRecord
   validate :borrower_must_be_pre_authorized
   validate :validate_loan_change, if: :will_save_change_to_loan?
   validate :first_discount_date_can_only_be_mid_month_or_end_of_month
+  validate :hr_approval_needs_first_discount_date
   validate :validate_term_offering_change,
            if: :will_save_change_to_term_offering_id?
 
@@ -260,6 +261,12 @@ class Credit < ApplicationRecord
           expected_payment_date,
           term_duration_type
         )
+    end
+  end
+
+  def hr_approval_needs_first_discount_date
+    if hr_status == "approved" && first_discount_date.nil?
+      errors.add(:first_discount_date, :blank)
     end
   end
 end

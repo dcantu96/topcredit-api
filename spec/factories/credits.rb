@@ -14,14 +14,16 @@ FactoryBot.define do
 
     status { "new" }
     loan { FFaker::Random.rand(5_000..50_000) }
-    contract_status { "pending" }
-    authorization_status { "pending" }
-    payroll_receipt_status { "pending" }
 
     # Trait for a credit with documents (using a file)
     trait :with_documents do
-      status { "pending" }
       transient { file_path { Rails.root.join("db", "assets", "150.png") } }
+
+      status { "pending" }
+      contract_status { "pending" }
+      authorization_status { "pending" }
+      payroll_receipt_status { "pending" }
+
       after(:build) do |credit, evaluator|
         credit.contract.attach(
           io: File.open(evaluator.file_path, "rb"),
