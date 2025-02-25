@@ -263,7 +263,7 @@ class Credit < ApplicationRecord
   def can_only_have_one_dispersed_credit_per_borrower
     return unless borrower
 
-    if borrower.credits.dispersed.count > 0
+    if borrower.credits.dispersed.count > 1
       errors.add(:borrower, :has_dispersed_credit)
     end
   end
