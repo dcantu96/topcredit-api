@@ -43,6 +43,7 @@ class Credit < ApplicationRecord
   validate :validate_loan_change, if: :will_save_change_to_loan?
   validate :first_discount_date_can_only_be_mid_month_or_end_of_month
   validate :hr_approval_needs_first_discount_date
+  validate :can_only_have_one_dispersed_credit_per_borrower
   validate :validate_term_offering_change,
            if: :will_save_change_to_term_offering_id?
 
@@ -256,6 +257,14 @@ class Credit < ApplicationRecord
   def hr_approval_needs_first_discount_date
     if hr_status == "approved" && first_discount_date.nil?
       errors.add(:first_discount_date, :blank)
+    end
+  end
+
+  def can_only_have_one_dispersed_credit_per_borrower
+    return unless borrower
+
+    if borrower.credits.dispersed.count > 0
+      errors.add(:borrower, :has_dispersed_credit)
     end
   end
 end
