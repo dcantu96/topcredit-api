@@ -1,20 +1,18 @@
 module Payments
-  def self.first_expected_payment_date(dispersed_at, term_duration_type)
+  def self.first_expected_payment_date(approved_at, term_duration_type)
     # Determine the initial payment base: 15th or end of the month
     # if duration is bi-monthly, the first payment is the 15th or the end of the month
     #   if dispersed before the 4th of the month, the first payment is the 15th else if dispersed before the 20th, the first payment is the end of the month, else the first payment is the 15th of the next month
     # else if the payment is before the 20th, the first payment is the end of the month, else the first payment is the end of next the month
 
     if term_duration_type == "bi-monthly"
-      if dispersed_at.at_noon.day < 4
-        return dispersed_at.change(day: 15).at_noon
-      end
-      return dispersed_at.end_of_month.at_noon if dispersed_at.at_noon.day < 20
-      return dispersed_at.advance(months: 1).change(day: 15).at_noon
+      return approved_at.change(day: 15).at_noon if approved_at.at_noon.day < 4
+      return approved_at.end_of_month.at_noon if approved_at.at_noon.day < 20
+      return approved_at.advance(months: 1).change(day: 15).at_noon
     end
 
-    return dispersed_at.end_of_month.at_noon if dispersed_at.day < 20
-    dispersed_at.advance(months: 1).end_of_month.at_noon
+    return approved_at.end_of_month.at_noon if approved_at.day < 20
+    approved_at.advance(months: 1).end_of_month.at_noon
   end
 
   def self.get_next_payment_date(prev_payment_date, term_duration_type)
