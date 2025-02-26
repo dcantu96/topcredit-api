@@ -64,13 +64,21 @@ FactoryBot.define do
       authorized
 
       hr_status { "approved" }
+      first_discount_date do
+        Payments.first_expected_payment_date(
+          FFaker::Time.between(24.months.ago, Time.current),
+          term_offering.term.duration_type
+        )
+      end
     end
 
     trait :dispersed do
       hr_approved
 
       status { "dispersed" }
-      dispersed_at { FFaker::Time.between(24.months.ago, Time.current) }
+      dispersed_at do
+        FFaker::Time.between(first_discount_date, first_discount_date + 3.days)
+      end
 
       after(:create) do |credit|
         credit

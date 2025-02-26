@@ -69,6 +69,14 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:hr) }
     end
 
+    trait :authorizations do
+      after(:build) { |user| user.add_role(:authorizations) }
+    end
+
+    trait :dispersions do
+      after(:build) { |user| user.add_role(:dispersions) }
+    end
+
     transient { custom_domain { nil } }
 
     after(:build) do |user, evaluator|
