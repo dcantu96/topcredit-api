@@ -61,20 +61,28 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:admin) }
     end
 
-    trait :requests do
-      after(:build) { |user| user.add_role(:requests) }
-    end
-
-    trait :hr do
-      after(:build) { |user| user.add_role(:hr) }
-    end
-
     trait :authorizations do
       after(:build) { |user| user.add_role(:authorizations) }
     end
 
     trait :dispersions do
       after(:build) { |user| user.add_role(:dispersions) }
+    end
+
+    trait :hr do
+      after(:build) { |user| user.add_role(:hr) }
+    end
+
+    trait :payments do
+      after(:build) { |user| user.add_role(:payments) }
+    end
+
+    trait :pre_authorizations do
+      after(:build) { |user| user.add_role(:pre_authorizations) }
+    end
+
+    trait :requests do
+      after(:build) { |user| user.add_role(:requests) }
     end
 
     transient { custom_domain { nil } }

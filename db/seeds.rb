@@ -32,9 +32,11 @@ if Doorkeeper::Application.count.zero?
 end
 
 create(:user, :admin, email: "admin@staff.com")
-create(:user, :requests, email: "solicitudes@staff.com")
 create(:user, :authorizations, email: "autorizaciones@staff.com")
 create(:user, :dispersions, email: "dispersiones@staff.com")
+create(:user, :payments, email: "cobranza@staff.com")
+create(:user, :pre_authorizations, email: "pre-autorizaciones@staff.com")
+create(:user, :requests, email: "solicitudes@staff.com")
 
 # Create terms.
 create_list(:term, 4, :bi_monthly)

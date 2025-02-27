@@ -4,11 +4,11 @@ class User < ApplicationRecord
   ROLE_OPTIONS = {
     "admin" => "Administrador",
     "authorizations" => "Autorizaciones",
-    "payments" => "Cobranza",
+    "companies" => "Clientes",
     "dispersions" => "Dispersiones",
-    "installations" => "Instalaciones",
-    "pre_authorizations" => "Pre-autorizaciones",
     "hr" => "RH",
+    "payments" => "Cobranza",
+    "pre_authorizations" => "Pre-autorizaciones",
     "requests" => "Solicitudes"
   }.freeze
 
@@ -16,12 +16,13 @@ class User < ApplicationRecord
         -> do
           with_any_role(
             :admin,
-            :requests,
-            :pre_authorizations,
             :authorizations,
+            :companies,
             :dispersions,
+            :hr,
             :payments,
-            :hr
+            :pre_authorizations,
+            :requests
           )
         end
   # Include default devise modules. Others available are:
