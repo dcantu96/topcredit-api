@@ -86,6 +86,7 @@ FactoryBot.define do
           .where("expected_at <= ?", Time.current)
           .each do |payment|
             payment.update!(
+              hr_confirmed_at: payment.expected_at.advance(hours: -2),
               paid_at: payment.expected_at,
               amount: credit.amortization
             )
@@ -107,7 +108,7 @@ FactoryBot.define do
             .limit(evaluator.num_missing_payments)
 
         missing_payments.each do |payment|
-          payment.update!(paid_at: nil, amount: nil)
+          payment.update!(paid_at: nil, amount: nil, hr_confirmed_at: nil)
         end
       end
     end
@@ -125,7 +126,7 @@ FactoryBot.define do
           credit.payments.order(:number).limit(num_missing_payments)
 
         missing_payments.each do |payment|
-          payment.update!(paid_at: nil, amount: nil)
+          payment.update!(paid_at: nil, amount: nil, hr_confirmed_at: nil)
         end
       end
     end

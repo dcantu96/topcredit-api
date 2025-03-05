@@ -13,6 +13,7 @@ class Payment < ApplicationRecord
 
   validate :credit_must_dispersed
   validate :credit_must_be_approved_by_hr
+  validate :must_be_confirmed_by_hr_to_set_amount
 
   scope :paid, -> { where.not(paid_at: nil) }
   scope :unpaid, -> { where(paid_at: nil) }
@@ -34,6 +35,12 @@ class Payment < ApplicationRecord
   def credit_must_be_approved_by_hr
     unless credit.hr_status == "approved"
       errors.add(:credit, :must_be_approved_by_hr)
+    end
+  end
+
+  def must_be_confirmed_by_hr_to_set_amount
+    if hr_confirmed_at.nil? && amount.present?
+      errors.add(:amount, :must_be_confirmed_by_hr_to_set_amount)
     end
   end
 end

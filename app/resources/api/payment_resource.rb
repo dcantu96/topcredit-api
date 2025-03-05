@@ -3,12 +3,13 @@ class Api::PaymentResource < JSONAPI::Resource
              :number,
              :paid_at,
              :expected_amount,
+             :hr_confirmed_at,
              :expected_at,
              :created_at,
              :updated_at
   has_one :credit
 
-  filters :paid_at, :credit_id
+  filters :paid_at, :hr_confirmed_at, :amount, :credit_id
   filter :range,
          apply: ->(records, value, _options) do
            Time.zone = "Monterrey"
