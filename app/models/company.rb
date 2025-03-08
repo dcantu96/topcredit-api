@@ -16,7 +16,7 @@ class Company < ApplicationRecord
   validates :domain,
             presence: true,
             format: {
-              with: /\A[a-zA-Z0-9_-]+\.[a-zA-Z]{2,}\z/
+              with: /\A[a-zA-Z0-9_-]+(\.[a-zA-Z]{2,})+\z/
             }
   validates :employee_salary_frequency,
             presence: true,
