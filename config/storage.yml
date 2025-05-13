@@ -13,6 +13,15 @@ amazon:
   secret_access_key: <%= ENV['STORAGE_SECRET_ACCESS_KEY'] %>
   region: <%= ENV['STORAGE_REGION'] %>
   bucket: <%= ENV['STORAGE_BUCKET'] %>
+
+cloudflare:
+  service: S3
+  access_key_id: <%= ENV["STORAGE_ACCESS_KEY_ID"] %>
+  secret_access_key: <%= ENV["STORAGE_SECRET_ACCESS_KEY"] %>
+  region: auto
+  bucket: <%= ENV["STORAGE_BUCKET"] %>
+  endpoint: <%= ENV["STORAGE_ENDPOINT"] %>
+  force_path_style: true
 # Remember not to checkin your GCS keyfile to a repository
 # google:
 #   service: GCS
